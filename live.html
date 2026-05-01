@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Premium Draw - Nazimen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --gold: #d4af37; --gold-glow: rgba(212, 175, 55, 0.7); --bg: #000000; }
+        
+        body { background-color: var(--bg); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; user-select: none; -webkit-user-select: none; position: relative; min-height: 100vh; overflow-x: hidden; }
+        
+        /* Фондағы алтын шаңға арналған Canvas */
+        #dustCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+
+        .header { width: 100%; padding: 20px; display: flex; justify-content: space-between; font-size: 0.9rem; border-bottom: 1px solid rgba(212, 175, 55, 0.3); box-sizing: border-box; position: sticky; top: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); z-index: 100; }
+        .id-val { color: var(--gold); font-weight: 900; }
+        .container { width: 100%; max-width: 500px; padding: 15px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; z-index: 10; }
+        
+        /* Басты тақырып */
+        .section-title { font-weight: 900; font-size: 1.25rem; color: var(--gold); text-transform: uppercase; margin: 20px 0; text-align: center; line-height: 1.4; }
+        
+        /* Стандартты тор дизайны (Барлығы 1 қалыпты) */
+        .prize-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; margin-bottom: 25px; }
+        .prize-card { background: rgba(10, 10, 10, 0.8); border: 1px solid var(--gold); border-radius: 12px; padding: 10px 2px 5px 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90px; text-align: center; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .prize-img { width: 80%; height: 45px; object-fit: contain; filter: drop-shadow(0 0 4px var(--gold-glow)); }
+        
+        /* Басты сыйлық белгісі (Көлік пен Турға арналған) */
+        .main-tag { position: absolute; top: -8px; background: var(--gold); color: #000; padding: 2px 4px; border-radius: 10px; font-size: 0.45rem; font-weight: 900; white-space: nowrap; box-shadow: 0 0 8px var(--gold-glow); z-index: 5; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .prize-name { font-size: 0.55rem; font-weight: 700; margin-top: 6px; color: #fff; text-transform: uppercase; }
+        
+        .chests-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; margin-top: 10px; }
+        .chest-card { cursor: pointer; transition: 0.3s; transform: scale(1); }
+        .chest-card:active { transform: scale(0.9); }
+        .chest-img { width: 100%; filter: drop-shadow(0 0 10px var(--gold-glow)); }
+        
+        .open-btn { background: linear-gradient(45deg, #bf953f, #fcf6ba, #bf953f); color: #000; border: none; padding: 18px; border-radius: 50px; font-size: 1.1rem; font-weight: 900; width: 100%; margin-top: 20px; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); }
+        .open-btn:active { transform: scale(0.95); }
+        
+        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); display:none; align-items:center; justify-content:center; z-index:2000; }
+        .modal-box { background: #000; border: 2px solid var(--gold); border-radius: 30px; width: 85%; padding: 40px 20px; text-align: center; box-shadow: 0 0 30px var(--gold-glow); }
+        .res-img { width: 180px; height: 150px; object-fit: contain; margin-bottom: 20px; filter: drop-shadow(0 0 20px var(--gold-glow)); }
+    </style>
+</head>
+<body>
+    <!-- Алтын шаң (Dust) эффектісі -->
+    <canvas id="dustCanvas"></canvas>
+
+    <div class="header">
+        <div>ID: <span class="id-val" id="userIdDisp">...</span></div>
+        <div style="color: #25d366; font-weight: 900;">LIVE 🟢</div>
+    </div>
+    
+    <div class="container" id="mainView">
+        <div class="section-title">NAZIMEN КОБДИШАСЫНАН<br> СЫЙЛЫҒЫҢЫЗДЫ АЛЫҢЫЗ</div>
+        
+        <div class="prize-grid">
+            <!-- Барлық 12 ұяшық бірдей стандартпен орналасқан -->
+            <div class="prize-card"><img src="money.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">50 000 ₸</div></div>
+            <div class="prize-card"><img src="dyson.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Dyson</div></div>
+            <div class="prize-card"><img src="sumka.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Сөмке</div></div>
+            <div class="prize-card"><img src="Satuar.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Сотуар</div></div>
+            
+            <div class="prize-card"><img src="golden (1).png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Алтын</div></div>
+            
+            <!-- Басты сыйлық: Көлік -->
+            <div class="prize-card">
+                <div class="main-tag">🏆 Басты сыйлық</div>
+                <img src="elantra.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Elantra</div>
+            </div>
+            
+            <div class="prize-card"><img src="syrga.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Күміс сырға</div></div>
+            <div class="prize-card"><img src="parfum.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Парфюм</div></div>
+            
+            <div class="prize-card"><img src="cosmitic.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Косметика</div></div>
+            <div class="prize-card"><img src="cushion.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Кушон</div></div>
+            <div class="prize-card"><img src="bag.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Косметичка</div></div>
+            
+            <!-- Басты сыйлық: Тур -->
+            <div class="prize-card">
+                <div class="main-tag">🏆 Басты сыйлық</div>
+                <img src="china (1).png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Бизнес тур</div>
+            </div>
+        </div>
+        <button class="open-btn" onclick="goToChests()">🎁 СЫЙЛЫҒЫМДЫ АШУ</button>
+    </div>
+
+    <div class="container" id="chestView" style="display:none;">
+        <div class="section-title">Қобдишаны таңдаңыз</div>
+        <div class="chests-grid">
+            <script>
+                for(let i=0; i<12; i++) { 
+                    document.write(`<div class="chest-card" onclick="revealPrize()"><img src="chest.png" class="chest-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"></div>`); 
+                }
+            </script>
+        </div>
+    </div>
+
+    <div class="modal" id="winModal">
+        <div class="modal-box">
+            <h2 style="color:var(--gold); margin-bottom:5px;">ҚҰТТЫҚТАЙМЫЗ!</h2>
+            <p style="color:#888; font-size:0.8rem;">Сіздің ұтысыңыз:</p>
+            <div id="prizeResult"></div>
+            <button onclick="closeApp()" style="background:var(--gold); color:#000; border:none; padding:15px; width:100%; border-radius:50px; font-weight:900; margin-top:20px; cursor:pointer;">БОТҚА ОРАЛУ</button>
+        </div>
+    </div>
+
+    <!-- Алтын шаңды (Dust) жасайтын скрипт -->
+    <script>
+        const canvas = document.getElementById('dustCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles;
+
+        function initParticles() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = [];
+            for (let i = 0; i < 40; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    r: Math.random() * 2 + 0.5,
+                    dx: (Math.random() - 0.5) * 0.4,
+                    dy: (Math.random() - 0.5) * 0.4 - 0.2, // Ақырын жоғары көтеріледі
+                    opacity: Math.random() * 0.6 + 0.2
+                });
+            }
+        }
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(212, 175, 55, ${p.opacity})`;
+                ctx.fill();
+                p.x += p.dx;
+                p.y += p.dy;
+                
+                // Экраннан шығып кетсе қайтару
+                if (p.y < -10) p.y = height + 10;
+                if (p.x < -10) p.x = width + 10;
+                if (p.x > width + 10) p.x = -10;
+            });
+            requestAnimationFrame(drawParticles);
+        }
+
+        initParticles();
+        drawParticles();
+        window.addEventListener('resize', initParticles);
+    </script>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.onkeydown = function(e) {
+            if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) return false; 
+        };
+
+        const tg = window.Telegram.WebApp; 
+        tg.expand();
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('id') || "БЕЛГІСІЗ";
+        const attemptId = urlParams.get('attempt') || "test_000"; 
+        let prizeFromBot = urlParams.get('prize') || "Құпия сыйлық"; 
+        
+        document.getElementById('userIdDisp').innerText = userId;
+        
+        function goToChests() {
+            if(localStorage.getItem('opened_' + attemptId)) {
+                alert('❌ Сіз бұл сыйлықты ашып қойғансыз!');
+                tg.close();
+                return;
+            }
+            document.getElementById('mainView').style.display = 'none';
+            document.getElementById('chestView').style.display = 'flex';
+        }
+        
+        function revealPrize() {
+            localStorage.setItem('opened_' + attemptId, 'true'); 
+            
+            const prizeImgs = { 
+                "50 000 ₸": "money.png",
+                "Dyson": "dyson.png",
+                "Сөмке": "sumka.png",
+                "Сотуар": "Satuar.png",
+                "Алтын": "golden (1).png",
+                "Elantra": "elantra.png",
+                "Күміс сырға": "syrga.png",
+                "Парфюм": "parfum.png",
+                "Косметика": "cosmitic.png",
+                "Кушон": "cushion.png",
+                "Косметичка": "bag.png",
+                "Бизнес тур": "china (1).png"
+            };
+            
+            const img = prizeImgs[prizeFromBot] || "chest.png"; 
+            document.getElementById('prizeResult').innerHTML = `<img src="${img}" class="res-img" onerror="this.src='https://placehold.co/180/000/d4af37?text=?'"><h3 style="font-size:1.5rem; margin:0; color:#fff;">${prizeFromBot}</h3>`;
+            document.getElementById('winModal').style.display = 'flex';
+            
+            confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 }, zIndex: 3000 });
+        }
+
+        function closeApp() {
+            try { tg.sendData("update_tickets"); } catch(e) {}
+            tg.close();
+        }
+    </script>
+</body>
+</html>
