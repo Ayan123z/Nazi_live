@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="kk">
 <head>
@@ -11,13 +12,13 @@
         
         body { background-color: var(--bg); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; user-select: none; -webkit-user-select: none; min-height: 100vh; overflow-x: hidden; position: relative; }
         
-        /* 🌟 ЖАҢА АЛТЫН ШАҢ (МҮЛДЕМ ҚАТЫРМАЙТЫН CSS АНИМАЦИЯ) */
-        .sparkle { position: fixed; bottom: -10px; background: #d4af37; border-radius: 50%; pointer-events: none; opacity: 0.6; z-index: -1; animation: floatUp linear infinite; box-shadow: 0 0 5px #d4af37; }
+        /* 🌟 АЛТЫН ШАҢ (Бұрынғыдан әлдеқайда баяу әрі жұмсақ) */
+        .sparkle { position: fixed; bottom: -10px; background: #d4af37; border-radius: 50%; pointer-events: none; opacity: 0.4; z-index: -1; animation: floatUp linear infinite; box-shadow: 0 0 5px #d4af37; }
         @keyframes floatUp {
             0% { transform: translateY(0) translateX(0); opacity: 0; }
-            10% { opacity: 0.8; }
-            90% { opacity: 0.8; }
-            100% { transform: translateY(-110vh) translateX(20px); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-110vh) translateX(30px); opacity: 0; }
         }
 
         .header { width: 100%; padding: 15px 20px; display: flex; justify-content: space-between; font-size: 0.9rem; border-bottom: 1px solid rgba(212, 175, 55, 0.2); box-sizing: border-box; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 100; position: sticky; top: 0; }
@@ -28,10 +29,15 @@
         
         /* Стандартты тор */
         .prize-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; margin-bottom: 20px; }
-        .prize-card { background: rgba(15,15,15,0.9); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 10px; padding: 8px 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90px; text-align: center; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+        
+        .prize-card { background: rgba(15,15,15,0.9); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 10px; padding: 8px 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90px; text-align: center; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+        
+        /* 🔥 БАСТЫ СЫЙЛЫҚТАРҒА АРНАЛҒАН АКЦЕНТ */
+        .main-prize-card { background: rgba(40, 30, 5, 0.9); border: 1.5px solid var(--gold); box-shadow: 0 0 12px rgba(212, 175, 55, 0.3) inset, 0 0 8px rgba(212, 175, 55, 0.2); transform: scale(1.02); z-index: 2;}
+        
         .prize-img { width: 80%; height: 45px; object-fit: contain; filter: drop-shadow(0 0 3px rgba(212, 175, 55, 0.4)); }
         
-        .main-tag { position: absolute; top: -8px; background: var(--gold); color: #000; padding: 2px 5px; border-radius: 8px; font-size: 0.45rem; font-weight: 900; white-space: nowrap; z-index: 5; text-transform: uppercase; box-shadow: 0 0 5px var(--gold-glow); }
+        .main-tag { position: absolute; top: -8px; background: var(--gold); color: #000; padding: 2px 4px; border-radius: 8px; font-size: 0.42rem; font-weight: 900; white-space: nowrap; z-index: 5; text-transform: uppercase; box-shadow: 0 0 5px var(--gold-glow); }
         .prize-name { font-size: 0.5rem; font-weight: 700; margin-top: 6px; color: #fff; text-transform: uppercase; }
         
         .chests-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; margin-top: 10px; }
@@ -60,29 +66,32 @@
         <div class="section-title">NAZIMEN КОБДИШАСЫНАН<br> СЫЙЛЫҒЫҢЫЗДЫ АЛЫҢЫЗ</div>
         
         <div class="prize-grid">
+            <!-- Қатар 1 -->
             <div class="prize-card"><img src="money.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">50 000 ₸</div></div>
             <div class="prize-card"><img src="dyson.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Dyson</div></div>
             <div class="prize-card"><img src="sumka.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Сөмке</div></div>
             <div class="prize-card"><img src="Satuar.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Сотуар</div></div>
             
+            <!-- Қатар 2 (ОРТАДА БАСТЫ СЫЙЛЫҚТАР АКЦЕНТПЕН) -->
             <div class="prize-card"><img src="golden (1).png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Алтын</div></div>
             
-            <div class="prize-card">
+            <div class="prize-card main-prize-card">
                 <div class="main-tag">🏆 Басты сыйлық</div>
                 <img src="elantra.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Elantra</div>
             </div>
             
-            <div class="prize-card"><img src="syrga.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Күміс сырға</div></div>
-            <div class="prize-card"><img src="parfum.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Парфюм</div></div>
-            
-            <div class="prize-card"><img src="cosmitic.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Косметика</div></div>
-            <div class="prize-card"><img src="cushion.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Кушон</div></div>
-            <div class="prize-card"><img src="bag.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Косметичка</div></div>
-            
-            <div class="prize-card">
+            <div class="prize-card main-prize-card">
                 <div class="main-tag">🏆 Басты сыйлық</div>
                 <img src="china (1).png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Бизнес тур</div>
             </div>
+
+            <div class="prize-card"><img src="syrga.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Күміс сырға</div></div>
+            
+            <!-- Қатар 3 -->
+            <div class="prize-card"><img src="parfum.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Парфюм</div></div>
+            <div class="prize-card"><img src="cosmitic.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Косметика</div></div>
+            <div class="prize-card"><img src="cushion.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Кушон</div></div>
+            <div class="prize-card"><img src="bag.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Косметичка</div></div>
         </div>
         <button class="open-btn" onclick="goToChests()">🎁 СЫЙЛЫҒЫМДЫ АШУ</button>
     </div>
@@ -108,14 +117,14 @@
     </div>
 
     <script>
-        // АЛТЫН ШАҢДЫ ЖАСАУ (ҚАТЫРМАЙТЫН НҰСҚА)
+        // АЛТЫН ШАҢ (УАҚЫТЫ ҰЗАРТЫЛДЫ - ӨТЕ БАЯУ)
         const dc = document.getElementById('dust-container');
         for(let i=0; i<30; i++) {
             let el = document.createElement('div');
             el.className = 'sparkle';
             el.style.left = Math.random() * 100 + 'vw';
             el.style.width = el.style.height = (Math.random() * 2 + 1.5) + 'px';
-            el.style.animationDuration = (Math.random() * 4 + 4) + 's';
+            el.style.animationDuration = (Math.random() * 6 + 8) + 's'; // 8-14 секунд аралығында баяу ұшады
             el.style.animationDelay = (Math.random() * 5) + 's';
             dc.appendChild(el);
         }
@@ -135,7 +144,6 @@
         const userId = urlParams.get('id') || "БЕЛГІСІЗ";
         const attemptId = urlParams.get('attempt') || "test_000"; 
         
-        // ҚОРҒАНЫС: Ботсыз кірсе, Косметичка шығады
         let prizeFromBot = urlParams.get('prize');
         if (!prizeFromBot) {
             prizeFromBot = "Косметичка";
