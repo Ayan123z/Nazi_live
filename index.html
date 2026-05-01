@@ -9,36 +9,48 @@
     <style>
         :root { --gold: #d4af37; --gold-glow: rgba(212, 175, 55, 0.7); --bg: #050505; }
         
-        body { background-color: var(--bg); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; user-select: none; -webkit-user-select: none; min-height: 100vh; }
+        body { background-color: var(--bg); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; user-select: none; -webkit-user-select: none; min-height: 100vh; overflow-x: hidden; position: relative; }
         
-        .header { width: 100%; padding: 15px 20px; display: flex; justify-content: space-between; font-size: 0.9rem; border-bottom: 1px solid rgba(212, 175, 55, 0.2); box-sizing: border-box; background: #000; z-index: 100; position: sticky; top: 0; }
+        /* 🌟 ЖАҢА АЛТЫН ШАҢ (МҮЛДЕМ ҚАТЫРМАЙТЫН CSS АНИМАЦИЯ) */
+        .sparkle { position: fixed; bottom: -10px; background: #d4af37; border-radius: 50%; pointer-events: none; opacity: 0.6; z-index: -1; animation: floatUp linear infinite; box-shadow: 0 0 5px #d4af37; }
+        @keyframes floatUp {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-110vh) translateX(20px); opacity: 0; }
+        }
+
+        .header { width: 100%; padding: 15px 20px; display: flex; justify-content: space-between; font-size: 0.9rem; border-bottom: 1px solid rgba(212, 175, 55, 0.2); box-sizing: border-box; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 100; position: sticky; top: 0; }
         .id-val { color: var(--gold); font-weight: 900; }
-        .container { width: 100%; max-width: 500px; padding: 15px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 500px; padding: 15px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; z-index: 10; }
         
         .section-title { font-weight: 900; font-size: 1.2rem; color: var(--gold); text-transform: uppercase; margin: 15px 0 20px 0; text-align: center; line-height: 1.3; }
         
         /* Стандартты тор */
         .prize-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; margin-bottom: 20px; }
-        .prize-card { background: #111; border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 10px; padding: 8px 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90px; text-align: center; position: relative; }
-        .prize-img { width: 80%; height: 45px; object-fit: contain; }
+        .prize-card { background: rgba(15,15,15,0.9); border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 10px; padding: 8px 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90px; text-align: center; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+        .prize-img { width: 80%; height: 45px; object-fit: contain; filter: drop-shadow(0 0 3px rgba(212, 175, 55, 0.4)); }
         
-        .main-tag { position: absolute; top: -8px; background: var(--gold); color: #000; padding: 2px 5px; border-radius: 8px; font-size: 0.45rem; font-weight: 900; white-space: nowrap; z-index: 5; text-transform: uppercase; }
+        .main-tag { position: absolute; top: -8px; background: var(--gold); color: #000; padding: 2px 5px; border-radius: 8px; font-size: 0.45rem; font-weight: 900; white-space: nowrap; z-index: 5; text-transform: uppercase; box-shadow: 0 0 5px var(--gold-glow); }
         .prize-name { font-size: 0.5rem; font-weight: 700; margin-top: 6px; color: #fff; text-transform: uppercase; }
         
         .chests-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; margin-top: 10px; }
         .chest-card { cursor: pointer; transition: transform 0.2s; }
         .chest-card:active { transform: scale(0.95); }
-        .chest-img { width: 100%; filter: drop-shadow(0 0 5px var(--gold-glow)); }
+        .chest-img { width: 100%; filter: drop-shadow(0 0 8px var(--gold-glow)); }
         
-        .open-btn { background: linear-gradient(45deg, #bf953f, #fcf6ba, #bf953f); color: #000; border: none; padding: 16px; border-radius: 30px; font-size: 1rem; font-weight: 900; width: 100%; margin-top: 15px; cursor: pointer; }
+        .open-btn { background: linear-gradient(45deg, #bf953f, #fcf6ba, #bf953f); color: #000; border: none; padding: 16px; border-radius: 30px; font-size: 1rem; font-weight: 900; width: 100%; margin-top: 15px; cursor: pointer; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); }
         .open-btn:active { transform: scale(0.95); }
         
-        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.98); display:none; align-items:center; justify-content:center; z-index:2000; }
-        .modal-box { background: #0a0a0a; border: 2px solid var(--gold); border-radius: 20px; width: 85%; padding: 30px 20px; text-align: center; }
-        .res-img { width: 160px; height: 130px; object-fit: contain; margin-bottom: 15px; }
+        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); display:none; align-items:center; justify-content:center; z-index:2000; }
+        .modal-box { background: #0a0a0a; border: 2px solid var(--gold); border-radius: 20px; width: 85%; padding: 30px 20px; text-align: center; box-shadow: 0 0 20px var(--gold-glow); }
+        .res-img { width: 160px; height: 130px; object-fit: contain; margin-bottom: 15px; filter: drop-shadow(0 0 15px var(--gold-glow)); }
     </style>
 </head>
 <body>
+    <!-- Алтын шаң контейнері -->
+    <div id="dust-container"></div>
+
     <div class="header">
         <div>ID: <span class="id-val" id="userIdDisp">...</span></div>
         <div style="color: #25d366; font-weight: 900;">LIVE 🟢</div>
@@ -95,6 +107,20 @@
         </div>
     </div>
 
+    <script>
+        // АЛТЫН ШАҢДЫ ЖАСАУ (ҚАТЫРМАЙТЫН НҰСҚА)
+        const dc = document.getElementById('dust-container');
+        for(let i=0; i<30; i++) {
+            let el = document.createElement('div');
+            el.className = 'sparkle';
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.width = el.style.height = (Math.random() * 2 + 1.5) + 'px';
+            el.style.animationDuration = (Math.random() * 4 + 4) + 's';
+            el.style.animationDelay = (Math.random() * 5) + 's';
+            dc.appendChild(el);
+        }
+    </script>
+
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         document.addEventListener('contextmenu', event => event.preventDefault());
@@ -109,7 +135,7 @@
         const userId = urlParams.get('id') || "БЕЛГІСІЗ";
         const attemptId = urlParams.get('attempt') || "test_000"; 
         
-        // ҚОРҒАНЫС: Егер ботсыз кірсе, "Косметичка" шығады (Құпия сыйлық емес)
+        // ҚОРҒАНЫС: Ботсыз кірсе, Косметичка шығады
         let prizeFromBot = urlParams.get('prize');
         if (!prizeFromBot) {
             prizeFromBot = "Косметичка";
@@ -149,8 +175,7 @@
             document.getElementById('prizeResult').innerHTML = `<img src="${img}" class="res-img" onerror="this.src='https://placehold.co/160/000/d4af37?text=?'"><h3 style="font-size:1.3rem; margin:0; color:#fff;">${prizeFromBot}</h3>`;
             document.getElementById('winModal').style.display = 'flex';
             
-            // Шашуды сәл азайттым (телефон қатпас үшін)
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, zIndex: 3000 });
+            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, zIndex: 3000 });
         }
 
         function closeApp() {
