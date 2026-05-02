@@ -11,13 +11,13 @@
         
         body { background-color: var(--bg); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; user-select: none; -webkit-user-select: none; min-height: 100vh; overflow-x: hidden; position: relative; }
         
-        /* 🌟 АЛТЫН ШАҢ (Баяу) */
-        .sparkle { position: fixed; bottom: -10px; background: #d4af37; border-radius: 50%; pointer-events: none; opacity: 0.4; z-index: -1; animation: floatUp linear infinite; box-shadow: 0 0 5px #d4af37; }
+        /* 🌟 АЛТЫН ШАҢ (GPU Acceleration қосылған) */
+        .sparkle { position: fixed; bottom: -10px; background: #d4af37; border-radius: 50%; pointer-events: none; opacity: 0.4; z-index: -1; animation: floatUp linear infinite; will-change: transform, opacity; transform: translateZ(0); }
         @keyframes floatUp {
-            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            0% { transform: translate3d(0, 0, 0); opacity: 0; }
             10% { opacity: 0.6; }
             90% { opacity: 0.6; }
-            100% { transform: translateY(-110vh) translateX(30px); opacity: 0; }
+            100% { transform: translate3d(30px, -110vh, 0); opacity: 0; }
         }
 
         .header { width: 100%; padding: 15px 20px; display: flex; justify-content: space-between; font-size: 0.9rem; border-bottom: 1px solid rgba(212, 175, 55, 0.2); box-sizing: border-box; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 100; position: sticky; top: 0; }
@@ -26,53 +26,54 @@
         
         .section-title { font-weight: 900; font-size: 1.2rem; color: var(--gold); text-transform: uppercase; margin: 15px 0 20px 0; text-align: center; line-height: 1.3; }
         
-        /* Стандартты тор */
         .prize-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; margin-bottom: 20px; }
+        .prize-card { background: rgba(15,15,15,0.9); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 10px; padding: 8px 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90px; text-align: center; position: relative; }
         
-        .prize-card { background: rgba(15,15,15,0.9); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 10px; padding: 8px 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90px; text-align: center; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+        .main-prize-card { background: rgba(40, 30, 5, 0.9); border: 1.5px solid var(--gold); transform: scale(1.02); z-index: 2;}
+        .prize-img { width: 80%; height: 45px; object-fit: contain; }
         
-        /* 🔥 БАСТЫ СЫЙЛЫҚТАРҒА АРНАЛҒАН АКЦЕНТ */
-        .main-prize-card { background: rgba(40, 30, 5, 0.9); border: 1.5px solid var(--gold); box-shadow: 0 0 12px rgba(212, 175, 55, 0.3) inset, 0 0 8px rgba(212, 175, 55, 0.2); transform: scale(1.02); z-index: 2;}
-        
-        .prize-img { width: 80%; height: 45px; object-fit: contain; filter: drop-shadow(0 0 3px rgba(212, 175, 55, 0.4)); }
-        
-        .main-tag { position: absolute; top: -8px; background: var(--gold); color: #000; padding: 2px 4px; border-radius: 8px; font-size: 0.42rem; font-weight: 900; white-space: nowrap; z-index: 5; text-transform: uppercase; box-shadow: 0 0 5px var(--gold-glow); }
-        .prize-name { font-size: 0.45rem; font-weight: 700; margin-top: 6px; color: #fff; text-transform: uppercase; } 
+        .main-tag { position: absolute; top: -8px; background: var(--gold); color: #000; padding: 2px 4px; border-radius: 8px; font-size: 0.42rem; font-weight: 900; white-space: nowrap; z-index: 5; text-transform: uppercase; }
+        .prize-name { font-size: 0.45rem; font-weight: 700; margin-top: 6px; color: #fff; text-transform: uppercase; }
         
         .chests-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; margin-top: 10px; }
-        .chest-card { cursor: pointer; transition: transform 0.2s; position: relative; }
-        .chest-card:active { transform: scale(0.95); }
-        .chest-img { width: 100%; filter: drop-shadow(0 0 8px var(--gold-glow)); transition: all 0.3s ease; }
         
-        /* 🔥 ҚОБДИШАНЫҢ ДІРІЛ АНИМАЦИЯСЫ (ИНТРИГА) */
-        @keyframes hardShake {
-            0% { transform: translateX(0) scale(1); filter: drop-shadow(0 0 10px var(--gold-glow)); }
-            10% { transform: translateX(-5px) rotate(-5deg) scale(1.05); filter: drop-shadow(0 0 20px #fff); }
-            20% { transform: translateX(5px) rotate(5deg) scale(1.05); }
-            30% { transform: translateX(-5px) rotate(-5deg) scale(1.05); }
-            40% { transform: translateX(5px) rotate(5deg) scale(1.05); filter: drop-shadow(0 0 25px var(--gold)); }
-            50% { transform: translateX(-5px) rotate(-5deg) scale(1.05); }
-            60% { transform: translateX(5px) rotate(5deg) scale(1.05); }
-            70% { transform: translateX(-5px) rotate(-5deg) scale(1.05); filter: drop-shadow(0 0 30px #fff); }
-            80% { transform: translateX(5px) rotate(5deg) scale(1.05); }
-            90% { transform: translateX(-5px) rotate(-5deg) scale(1.05); }
-            100% { transform: translateX(0) scale(1.1); filter: drop-shadow(0 0 40px var(--gold)); }
+        /* 🔥 АНДРОЙД ҮШІН ОПТИМИЗАЦИЯ (GPU Render) */
+        .chest-card { cursor: pointer; position: relative; will-change: transform; transform: translateZ(0); -webkit-tap-highlight-color: transparent; }
+        .chest-img { width: 100%; will-change: transform; transform: translateZ(0); }
+        
+        /* Жеп-жеңіл 3D діріл (Ауыр көлеңкесіз) */
+        @keyframes safeShake {
+            0%, 100% { transform: translate3d(0,0,0); }
+            10%, 30%, 50%, 70%, 90% { transform: translate3d(-4px, 0, 0) rotate(-3deg); }
+            20%, 40%, 60%, 80% { transform: translate3d(4px, 0, 0) rotate(3deg); }
         }
+        
         .shaking .chest-img {
-            animation: hardShake 1.5s cubic-bezier(.36,.07,.19,.97) both;
+            animation: safeShake 1.2s ease-in-out both;
+            /* Андройдта қатпау үшін drop-shadow әдейі алынып тасталды */
         }
 
         .open-btn { background: linear-gradient(45deg, #bf953f, #fcf6ba, #bf953f); color: #000; border: none; padding: 16px; border-radius: 30px; font-size: 1rem; font-weight: 900; width: 100%; margin-top: 15px; cursor: pointer; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); }
         .open-btn:active { transform: scale(0.95); }
         
-        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); display:none; align-items:center; justify-content:center; z-index:2000; }
-        .modal-box { background: #0a0a0a; border: 2px solid var(--gold); border-radius: 20px; width: 85%; padding: 30px 20px; text-align: center; box-shadow: 0 0 20px var(--gold-glow); transform: scale(0.8); opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .modal-box.show { transform: scale(1); opacity: 1; }
-        .res-img { width: 160px; height: 130px; object-fit: contain; margin-bottom: 15px; filter: drop-shadow(0 0 15px var(--gold-glow)); }
+        /* Модалдық терезе анимациясы да оптимизацияланды */
+        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); display:none; align-items:center; justify-content:center; z-index:2000; will-change: opacity; }
+        .modal-box { background: #0a0a0a; border: 2px solid var(--gold); border-radius: 20px; width: 85%; padding: 30px 20px; text-align: center; transform: scale(0.8) translateZ(0); opacity: 0; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease-out; will-change: transform, opacity; }
+        .modal-box.show { transform: scale(1) translateZ(0); opacity: 1; }
+        .res-img { width: 160px; height: 130px; object-fit: contain; margin-bottom: 15px; }
+
+        /* Суреттерді алдын ала кэшке жүктеу (жасырын) */
+        .preload-images { position: absolute; width: 0; height: 0; overflow: hidden; z-index: -1; }
     </style>
 </head>
 <body>
-    <!-- Алтын шаң контейнері -->
+    <div class="preload-images">
+        <img src="money.png"> <img src="dyson.png"> <img src="sumka.png"> 
+        <img src="Satuar.png"> <img src="golden (1).png"> <img src="elantra.png"> 
+        <img src="china (1).png"> <img src="business.png"> <img src="parfum.png"> 
+        <img src="cosmitic.png"> <img src="cushion.png"> <img src="bag.png">
+    </div>
+
     <div id="dust-container"></div>
 
     <div class="header">
@@ -84,33 +85,20 @@
         <div class="section-title">NAZIMEN КОБДИШАСЫНАН<br> СЫЙЛЫҒЫҢЫЗДЫ АЛЫҢЫЗ</div>
         
         <div class="prize-grid">
-            <!-- Қатар 1 -->
-            <div class="prize-card"><img src="money.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">1 000 000 ₸</div></div>
-            <div class="prize-card"><img src="dyson.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Dyson</div></div>
-            <div class="prize-card"><img src="sumka.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Сөмке</div></div>
-            <div class="prize-card"><img src="Satuar.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Сотуар</div></div>
+            <div class="prize-card"><img src="money.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">1 000 000 ₸</div></div>
+            <div class="prize-card"><img src="dyson.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Dyson</div></div>
+            <div class="prize-card"><img src="sumka.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Сөмке</div></div>
+            <div class="prize-card"><img src="Satuar.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Сотуар</div></div>
             
-            <!-- Қатар 2 (ОРТАДА БАСТЫ СЫЙЛЫҚТАР АКЦЕНТПЕН) -->
-            <div class="prize-card"><img src="golden (1).png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Алтын</div></div>
+            <div class="prize-card"><img src="golden (1).png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Алтын</div></div>
+            <div class="prize-card main-prize-card"><div class="main-tag">🏆 Басты сыйлық</div><img src="elantra.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Elantra</div></div>
+            <div class="prize-card main-prize-card"><div class="main-tag">🏆 Басты сыйлық</div><img src="china (1).png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Бизнес тур</div></div>
+            <div class="prize-card"><img src="business.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Бизнес Пакет</div></div>
             
-            <div class="prize-card main-prize-card">
-                <div class="main-tag">🏆 Басты сыйлық</div>
-                <img src="elantra.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Elantra</div>
-            </div>
-            
-            <div class="prize-card main-prize-card">
-                <div class="main-tag">🏆 Басты сыйлық</div>
-                <img src="china (1).png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Бизнес тур</div>
-            </div>
-
-            <!-- Күміс сырға орнына Бизнес Пакет қойылды -->
-            <div class="prize-card"><img src="business.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Бизнес Пакет</div></div>
-            
-            <!-- Қатар 3 -->
-            <div class="prize-card"><img src="parfum.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Парфюм</div></div>
-            <div class="prize-card"><img src="cosmitic.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Косметика</div></div>
-            <div class="prize-card"><img src="cushion.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Кушон</div></div>
-            <div class="prize-card"><img src="bag.png" class="prize-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Косметичка</div></div>
+            <div class="prize-card"><img src="parfum.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Парфюм</div></div>
+            <div class="prize-card"><img src="cosmitic.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Косметика</div></div>
+            <div class="prize-card"><img src="cushion.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Кушон</div></div>
+            <div class="prize-card"><img src="bag.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Косметичка</div></div>
         </div>
         <button class="open-btn" onclick="goToChests()">🎁 СЫЙЛЫҒЫМДЫ АШУ</button>
     </div>
@@ -119,9 +107,8 @@
         <div class="section-title">Қобдишаны таңдаңыз</div>
         <div class="chests-grid">
             <script>
-                // onclick функциясына `this` элементі қосылды, яғни қай қобдиша басылғанын анықтау үшін
                 for(let i=0; i<12; i++) { 
-                    document.write(`<div class="chest-card" onclick="revealPrize(this)"><img src="chest.png" class="chest-img" loading="lazy" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"></div>`); 
+                    document.write(`<div class="chest-card" onclick="revealPrize(this)"><img src="chest.png" class="chest-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"></div>`); 
                 }
             </script>
         </div>
@@ -138,7 +125,7 @@
 
     <script>
         const dc = document.getElementById('dust-container');
-        for(let i=0; i<30; i++) {
+        for(let i=0; i<20; i++) {
             let el = document.createElement('div');
             el.className = 'sparkle';
             el.style.left = Math.random() * 100 + 'vw';
@@ -152,10 +139,6 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         document.addEventListener('contextmenu', event => event.preventDefault());
-        document.onkeydown = function(e) {
-            if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) return false; 
-        };
-
         const tg = window.Telegram.WebApp; 
         tg.expand();
         
@@ -164,9 +147,7 @@
         const attemptId = urlParams.get('attempt') || "test_000"; 
         
         let prizeFromBot = urlParams.get('prize');
-        if (!prizeFromBot) {
-            prizeFromBot = "Косметичка";
-        }
+        if (!prizeFromBot) prizeFromBot = "Косметичка";
         
         document.getElementById('userIdDisp').innerText = userId;
         
@@ -180,10 +161,9 @@
             document.getElementById('chestView').style.display = 'flex';
         }
         
-        let isOpening = false; // Қорғаныс: Адам қатарынан екі қобдишаны басып тастамас үшін
+        let isOpening = false; 
 
         function revealPrize(element) {
-            // Егер басқа қобдиша ашылып жатса немесе бұрын ашылған болса, ештеңе істемеу
             if (isOpening) return; 
             if (localStorage.getItem('opened_' + attemptId)) {
                 alert('❌ Сіз бұл сыйлықты ашып қойғансыз!');
@@ -191,10 +171,9 @@
                 return;
             }
 
-            isOpening = true; // Ашылу процесі басталды
-            element.classList.add('shaking'); // Қобдишаны дірілдету
+            isOpening = true; 
+            element.classList.add('shaking'); 
 
-            // Дірілдеп болған соң (1.5 секунд) сыйлықты көрсету
             setTimeout(() => {
                 localStorage.setItem('opened_' + attemptId, 'true'); 
                 
@@ -217,14 +196,15 @@
                 document.getElementById('prizeResult').innerHTML = `<img src="${img}" class="res-img" onerror="this.src='https://placehold.co/160/000/d4af37?text=?'"><h3 style="font-size:1.3rem; margin:0; color:#fff;">${prizeFromBot}</h3>`;
                 
                 document.getElementById('winModal').style.display = 'flex';
+                // RequestAnimationFrame арқылы анимацияны 60FPS-ке жеткізу
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        document.getElementById('winModalBox').classList.add('show');
+                        confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 }, zIndex: 3000, disableForReducedMotion: true });
+                    }, 50);
+                });
                 
-                // Модалды әдемілеп секіртіп шығару
-                setTimeout(() => {
-                    document.getElementById('winModalBox').classList.add('show');
-                    confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, zIndex: 3000 });
-                }, 50);
-                
-            }, 1500); // 1.5 секунд күту
+            }, 1200); 
         }
 
         function closeApp() {
