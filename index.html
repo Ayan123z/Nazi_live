@@ -26,7 +26,7 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* ЖҮКТЕЛУ ЭКРАНЫ */
+        /* ✅ ЖҮКТЕЛУ ЭКРАНЫ */
         #loadingScreen {
             position: fixed; inset: 0;
             background: var(--bg);
@@ -46,7 +46,7 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         #loadingText { color: var(--gold); font-weight: 700; font-size: 0.95rem; }
 
-        /* ҚАТЕ ЭКРАНЫ */
+        /* ✅ ҚАТЕ ЭКРАНЫ */
         #errorScreen {
             position: fixed; inset: 0;
             background: var(--bg);
@@ -64,7 +64,7 @@
             cursor: pointer; margin-top: 10px;
         }
 
-        /* ШАҢ АНИМАЦИЯСЫ */
+        /* ШАҢ */
         .sparkle {
             position: fixed; bottom: -10px;
             background: #d4af37; border-radius: 50%;
@@ -201,13 +201,13 @@
 </head>
 <body>
 
-<!-- ЖҮКТЕЛУ ЭКРАНЫ -->
+<!-- ✅ ЖҮКТЕЛУ -->
 <div id="loadingScreen">
     <div class="spinner"></div>
     <div id="loadingText">Жүктелуде...</div>
 </div>
 
-<!-- ҚАТЕ ЭКРАНЫ -->
+<!-- ✅ ҚАТЕ -->
 <div id="errorScreen">
     <div class="error-icon">🔒</div>
     <div id="errorMsg">Қате шықты</div>
@@ -218,7 +218,7 @@
 <!-- PRELOAD -->
 <div class="preload-images" id="preloadBox"></div>
 
-<!-- ШАҢ (АНИМАЦИЯ) -->
+<!-- ШАҢ -->
 <div id="dust-container"></div>
 
 <!-- HEADER -->
@@ -238,7 +238,7 @@
         <div class="prize-card"><img src="Satuar.png" class="prize-img" alt="Сотуар" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Сотуар</div></div>
 
         <div class="prize-card"><img src="golden (1).png" class="prize-img" alt="Алтын" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Алтын</div></div>
-        <div class="prize-card main-prize-card"><div class="main-tag">🏆 Басты сыйлық</div><img src="elantra.png" class="prize-img" alt="Көлік" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Көлік</div></div>
+        <div class="prize-card main-prize-card"><div class="main-tag">🏆 Басты сыйлық</div><img src="elantra.png" class="prize-img" alt="Elantra" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Elantra</div></div>
         <div class="prize-card main-prize-card"><div class="main-tag">🏆 Басты сыйлық</div><img src="china (1).png" class="prize-img" alt="Бизнес тур" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Бизнес тур</div></div>
         <div class="prize-card"><img src="business.png" class="prize-img" alt="Бизнес Пакет" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Бизнес Пакет</div></div>
 
@@ -270,15 +270,17 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
 // ========================================
-// 1. БАПТАУЛАР ЖӘНЕ API
+// 1. БАПТАУЛАР
 // ========================================
 const API_URL = "https://va-system.ru/api/open";
 
+// Telegram SDK қауіпсіз шақыру
 const tg = window.Telegram?.WebApp;
 try {
     if (tg) {
         tg.expand();
         tg.ready();
+        // ⚠️ FIX #4: disableVerticalSwipes — ескі версияда жоқ, қауіпсіз шақыру
         if (typeof tg.disableVerticalSwipes === 'function') {
             tg.disableVerticalSwipes();
         }
@@ -289,17 +291,12 @@ try {
 
 document.addEventListener('contextmenu', e => e.preventDefault());
 
+// URL параметрлері
 const urlParams = new URLSearchParams(window.location.search);
 const userId = urlParams.get('id') || "";
+const attemptId = urlParams.get('attempt') || "";
 
-// ✅ FIX: "const" орнына "let" қойылды. Ескі сілтемелерді құтқару үшін!
-let attemptId = urlParams.get('attempt') || "";
-
-// Ескі сілтемелерді құтқару (Fallback)
-if (!attemptId && userId) {
-    attemptId = "legacy_" + userId;
-}
-
+// ⚠️ FIX #9: Сыйлық атауын decode жасау
 let prizeFromBot = "Косметичка";
 try {
     const raw = urlParams.get('prize');
@@ -310,11 +307,11 @@ try {
 
 document.getElementById('userIdDisp').innerText = userId || "—";
 
-// Жадты тазарту үшін кілт v4 болып өзгерді
-const storageKey = `nz_v4_${userId}_${attemptId}`;
+// ⚠️ FIX #1: localStorage кілті — userId+attemptId
+const storageKey = `nz_v3_${userId}_${attemptId}`;
 
 // ========================================
-// 2. СУРЕТ КАРТАСЫ ("Көлік" қосылды)
+// 2. СУРЕТ КАРТА
 // ========================================
 const PRIZE_IMAGES = {
     "1 000 000 ₸": "money.png",
@@ -322,7 +319,6 @@ const PRIZE_IMAGES = {
     "Сөмке":        "sumka.png",
     "Сотуар":       "Satuar.png",
     "Алтын":        "golden (1).png",
-    "Көлік":        "elantra.png",
     "Elantra":      "elantra.png",
     "Бизнес Пакет": "business.png",
     "Парфюм":       "parfum.png",
@@ -333,7 +329,7 @@ const PRIZE_IMAGES = {
 };
 
 // ========================================
-// 3. ШАҢ АНИМАЦИЯСЫ
+// 3. ШАҢ
 // ========================================
 function createSparkles() {
     const dc = document.getElementById('dust-container');
@@ -351,7 +347,7 @@ function createSparkles() {
 }
 
 // ========================================
-// 4. ҚОБДИШАЛАРДЫ ЖАСАУ
+// 4. КОБДИШАЛАР ЖАСАУ (FIX #3: document.write жоқ)
 // ========================================
 function createChests() {
     const grid = document.getElementById('chestsGrid');
@@ -374,11 +370,11 @@ function createChests() {
 }
 
 // ========================================
-// 5. СУРЕТТЕРДІ АЛДЫН АЛА ЖҮКТЕУ
+// 5. PRELOAD СУРЕТТЕР (FIX #6)
 // ========================================
 function preloadImages() {
     const box = document.getElementById('preloadBox');
-    const allImages = [...new Set(Object.values(PRIZE_IMAGES)), 'chest.png'];
+    const allImages = [...Object.values(PRIZE_IMAGES), 'chest.png'];
     let loaded = 0;
     const total = allImages.length;
 
@@ -397,12 +393,13 @@ function preloadImages() {
             box.appendChild(img);
         });
 
+        // Қауіпсіздік: 3 сек кейін қалай болғанда да резерв
         setTimeout(resolve, 3000);
     });
 }
 
 // ========================================
-// 6. ЖАДҚА САҚТАУ
+// 6. LOCALSTORAGE (FIX #1)
 // ========================================
 function isLocallyOpened() {
     try {
@@ -432,15 +429,29 @@ function showError(message, sub) {
     document.getElementById('errorScreen').style.display = 'flex';
 }
 
+function showAlert(text, callback) {
+    // FIX #5: Telegram-ның native alert-і жұмыс жасамаса fallback
+    if (tg && typeof tg.showAlert === 'function') {
+        try {
+            tg.showAlert(text, callback);
+            return;
+        } catch(e) { /* fallback */ }
+    }
+    alert(text);
+    if (callback) callback();
+}
+
 // ========================================
 // 8. БАСТАПҚЫ ТЕКСЕРУ
 // ========================================
 async function init() {
+    // 1. Параметрлер бар ма?
     if (!attemptId) {
         showError('❌ Сілтеме жарамсыз', 'Ботқа оралып қайта көріңіз');
         return;
     }
 
+    // 2. Локалды тексеру (тез)
     if (isLocallyOpened()) {
         showError(
             '❌ Сіз бұл сыйлықты ашып қойғансыз!',
@@ -449,8 +460,10 @@ async function init() {
         return;
     }
 
+    // 3. Барлық суреттерді алдын ала жүктеу
     await preloadImages();
 
+    // 4. Жүктелуді жасыру, негізгі бетті көрсету
     const loading = document.getElementById('loadingScreen');
     loading.classList.add('hide');
     setTimeout(() => {
@@ -459,14 +472,16 @@ async function init() {
 
     document.getElementById('mainView').style.display = 'flex';
 
+    // Шаң мен кобдишаларды жасау
     createSparkles();
     createChests();
 
+    // Open btn
     document.getElementById('openBtn').addEventListener('click', goToChests);
 }
 
 // ========================================
-// 9. ҚОБДИША БЕТІНЕ ӨТУ
+// 9. КОБДИША БЕТІНЕ ӨТУ
 // ========================================
 function goToChests() {
     if (isLocallyOpened()) {
@@ -478,7 +493,7 @@ function goToChests() {
 }
 
 // ========================================
-// 10. СЫЙЛЫҚТЫ АШУ ЖӘНЕ API
+// 10. СЫЙЛЫҚТЫ АШУ
 // ========================================
 let isOpening = false;
 
@@ -491,15 +506,16 @@ async function revealPrize(element) {
 
     isOpening = true;
 
+    // Барлық кобдишаларды блок ету
     document.querySelectorAll('.chest-card').forEach(c => {
         c.style.pointerEvents = 'none';
     });
 
     element.classList.add('shaking');
 
+    // ⚠️ FIX #2: API сұрау — қате болса жалғастырамыз
     let serverBlocked = false;
-    // Ескі сілтемелер (legacy_) API-ға жіберілмейді, бірден ашылады
-    if (!attemptId.startsWith('test_') && !attemptId.startsWith('legacy_')) {
+    if (!attemptId.startsWith('test_')) {
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000);
@@ -528,6 +544,7 @@ async function revealPrize(element) {
         return;
     }
 
+    // 1.2 секунд тітіркену → нәтиже
     setTimeout(() => {
         markLocallyOpened();
         showPrizeModal();
@@ -547,6 +564,7 @@ function showPrizeModal() {
     const modal = document.getElementById('winModal');
     modal.style.display = 'flex';
 
+    // Анимация
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
             document.getElementById('winModalBox').classList.add('show');
@@ -555,8 +573,10 @@ function showPrizeModal() {
     });
 }
 
+// ⚠️ FIX #7: Confetti ірі сыйлықтарға
 function fireConfetti() {
     try {
+        // Базалық confetti
         confetti({
             particleCount: 100,
             spread: 70,
@@ -565,8 +585,8 @@ function fireConfetti() {
             disableForReducedMotion: true
         });
 
-        // "Көлік" үшін де көп шашу
-        const bigPrizes = ["Көлік", "Elantra", "Бизнес тур", "Бизнес Пакет", "1 000 000 ₸", "Dyson", "Алтын"];
+        // Ірі сыйлықтарға — қосымша confetti
+        const bigPrizes = ["Elantra", "Бизнес тур", "Бизнес Пакет", "1 000 000 ₸", "Dyson", "Алтын"];
         if (bigPrizes.includes(prizeFromBot)) {
             setTimeout(() => {
                 confetti({
@@ -594,7 +614,7 @@ function fireConfetti() {
 }
 
 // ========================================
-// 11. САЙТТАН ШЫҒУ
+// 11. ЖАБУ
 // ========================================
 function closeApp() {
     try {
