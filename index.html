@@ -114,7 +114,6 @@
 
         .preload-images { position: absolute; width: 0; height: 0; overflow: hidden; z-index: -1; }
 
-        /* ЖҮКТЕЛУ ЖӘНЕ ҚАТЕ ЭКРАНДАРЫ */
         #loadingScreen, #errorScreen {
             position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column;
             align-items: center; justify-content: center; gap: 20px; z-index: 9999;
@@ -135,12 +134,9 @@
     </style>
 </head>
 <body>
-    <!-- Жүктелу экраны -->
     <div id="loadingScreen"><div class="spinner"></div><div id="loadingText">Жүктелуде...</div></div>
-    <!-- Қате экраны -->
     <div id="errorScreen"><div class="error-icon">🔒</div><div id="errorMsg">Қате шықты</div><div class="error-sub" id="errorSub">Ботқа оралып қайта көріңіз</div><button class="error-btn" onclick="closeApp()">БОТҚА ОРАЛУ</button></div>
 
-    <!-- Алдын ала суреттерді жүктеу -->
     <div class="preload-images" id="preloadBox"></div>
     <div id="dust-container"></div>
 
@@ -188,9 +184,9 @@
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
+        // ═══════════════════════════════════════════════════════════════
         // 1. БАПТАУЛАР
-        const API_URL = "https://va-system.ru/api/open";
-        
+        // ═══════════════════════════════════════════════════════════════
         const tg = window.Telegram?.WebApp; 
         try {
             if (tg) {
@@ -201,17 +197,19 @@
         
         document.addEventListener('contextmenu', event => event.preventDefault());
         
+        // ═══════════════════════════════════════════════════════════════
         // 2. ПАРАМЕТРЛЕРДІ ОҚУ
+        // ═══════════════════════════════════════════════════════════════
         const urlParams = new URLSearchParams(window.location.search);
         const userId = urlParams.get('id') || "БЕЛГІСІЗ";
         let attemptId = urlParams.get('attempt');
         
-        // ⚠️ ҚАТЕ ТҮЗЕТІЛДІ: Ескі немесе бос attemptId-ларды бір-бірімен шатастырмау үшін бірегей (unique) жасаймыз
+        // Егер attempt жоқ болса — кездейсоқ жасаймыз, ол ескі (legacy) деп белгіленеді
         if (!attemptId) {
-            attemptId = "legacy_" + userId + "_" + Math.floor(Math.random() * 100000);
+            attemptId = "legacy_" + userId + "_" + Date.now();
         }
 
-        // КИРИЛЛИЦА ҚОРҒАНЫСЫ
+        // Сыйлық атауы (URL-ден декодтау)
         let prizeFromBot = "Косметичка";
         try {
             const raw = urlParams.get('prize');
@@ -222,7 +220,21 @@
         
         document.getElementById('userIdDisp').innerText = userId;
         
-        // ⚠️ ҚАТЕ ТҮЗЕТІЛДІ: Тек 1 ғана таза кілт (lockKey) қолданамыз!
+        // ═══════════════════════════════════════════════════════════════
+        // ⚠️ НЕГІЗГІ ҚАТЕ ТҮЗЕТІЛДІ:
+        // 
+        // ЕСКІ КОД "сыйлық ашылды" белгісін екі жерде сақтайтын:
+        //   1. localStorage (браузер жадында)
+        //   2. tg.CloudStorage (Telegram бұлтында)
+        // 
+        // Telegram CloudStorage асинхронды әрі баяу жұмыс істейді,
+        // ол ескі мәндерді қайтаратын. Сондықтан жаңа чек жіберсек те,
+        // ол "ашылды" деп қате жауап беретін.
+        // 
+        // ЖАҢА КОД тек localStorage-ті ғана қолданады. Бұл сенімді әрі
+        // жылдам. Боттың өзінде UNIQUE индекс қорғанысы бар, сондықтан
+        // қосымша CloudStorage қажет емес.
+        // ═══════════════════════════════════════════════════════════════
         const lockKey = "nazi_lock_" + attemptId;
 
         const PRIZE_IMAGES = {
@@ -231,6 +243,10 @@
             "Elantra": "elantra.png", "Бизнес тур": "china (1).png", "Бизнес Пакет": "business.png", 
             "Парфюм": "parfum.png", "Косметика": "cosmitic.png", "Кушон": "cushion.png", "Косметичка": "bag.png"
         };
+
+        // ═══════════════════════════════════════════════════════════════
+        // 3. КӨМЕКШІ ФУНКЦИЯЛАР
+        // ═══════════════════════════════════════════════════════════════
 
         function createSparkles() {
             const dc = document.getElementById('dust-container');
@@ -276,17 +292,32 @@
                     img.src = src;
                     box.appendChild(img);
                 });
-                setTimeout(resolve, 3000); // 3 сек күтеміз
+                setTimeout(resolve, 3000);
             });
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // ҚОРҒАНЫС: ТЕК LOCALSTORAGE АРҚЫЛЫ ТЕКСЕРЕМІЗ
+        // 
+        // Бұл — әр attempt үшін бөлек кілт. Жаңа чек = жаңа attempt = 
+        // жаңа кілт. Сондықтан жаңа чек әрқашан ашылады.
+        // ═══════════════════════════════════════════════════════════════
+
         function isLocallyOpened() {
-            return localStorage.getItem(lockKey) === 'true';
+            try {
+                return localStorage.getItem(lockKey) === 'true';
+            } catch(e) {
+                // Егер localStorage қол жетпесе (тыйым салынса), қорғанысты өткізіп жіберу
+                return false;
+            }
         }
 
         function markLocallyOpened() {
-            localStorage.setItem(lockKey, 'true');
-            try { if (tg?.CloudStorage) tg.CloudStorage.setItem(lockKey, 'true'); } catch(e){}
+            try {
+                localStorage.setItem(lockKey, 'true');
+            } catch(e) {
+                // Қате болса — еш проблема жоқ, бот UNIQUE-пен қорғайды
+            }
         }
 
         function showError(message, sub) {
@@ -298,16 +329,11 @@
             document.getElementById('errorScreen').style.display = 'flex';
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // 4. БАСТАУ ФУНКЦИЯСЫ
+        // ═══════════════════════════════════════════════════════════════
         async function init() {
-            // Telegram Бұлттық жадын тексеру
-            try {
-                if (tg && tg.CloudStorage) {
-                    tg.CloudStorage.getItem(lockKey, (err, val) => {
-                        if (val === 'true') localStorage.setItem(lockKey, 'true');
-                    });
-                }
-            } catch(e) {}
-
+            // Локалды тексеру: бұл нақты attempt бұрын ашылған ба?
             if (isLocallyOpened()) {
                 return showError('❌ Сіз бұл сыйлықты ашып қойғансыз!', 'Жаңа сыйлық алу үшін жаңа чек жіберіңіз');
             }
@@ -335,6 +361,18 @@
         
         let isOpening = false; 
 
+        // ═══════════════════════════════════════════════════════════════
+        // 5. СЫЙЛЫҚТЫ АШУ
+        // 
+        // Серверге барып тексеру алынып тасталды (va-system.ru).
+        // Себептері:
+        //   1. Серверге қосымша жүктеме түсетін
+        //   2. Сервер баяуласа, клиент 5 секунд күтетін
+        //   3. Боттың UNIQUE индексі сенімді жұмыс істейді
+        // 
+        // Жаңа кодта тек локалды қорғаныс — әр attempt бір рет ашылады.
+        // Жаңа чек жіберсе → жаңа attempt → әрине ашылады.
+        // ═══════════════════════════════════════════════════════════════
         async function revealPrize(element) {
             if (isOpening) return; 
             if (isLocallyOpened()) {
@@ -343,41 +381,14 @@
 
             isOpening = true; 
             
-            // Басқа қобдишаларды басуды бұғаттау
+            // Барлық қобдишаларды бұғаттаймыз — біреуі ғана ашылсын
             document.querySelectorAll('.chest-card').forEach(c => {
                 c.style.pointerEvents = 'none';
             });
             
             element.classList.add('shaking'); 
 
-            let serverBlocked = false;
-            // Ескі сілтемелер мен тесттер серверге барып қиналмайды
-            if (!attemptId.startsWith('test_') && !attemptId.startsWith('legacy_')) {
-                try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 5000);
-                    
-                    const res = await fetch(API_URL, {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ attempt_id: attemptId, user_id: userId }),
-                        signal: controller.signal
-                    });
-                    clearTimeout(timeoutId);
-                    
-                    const data = await res.json();
-                    if (data.already_opened) serverBlocked = true;
-                } catch(e) {
-                    console.log("API сервері қате берді, локалды қорғаныс істеп тұр");
-                }
-            }
-
-            if (serverBlocked) {
-                element.classList.remove('shaking');
-                markLocallyOpened();
-                return showError('❌ Сіз бұл сыйлықты ашып қойғансыз!', 'Жаңа сыйлық алу үшін жаңа чек жіберіңіз');
-            }
-
-            // АШЫЛУ
+            // Анимация үшін аздап күту, содан соң нәтижені көрсету
             setTimeout(() => {
                 markLocallyOpened(); 
                 
@@ -392,7 +403,6 @@
                 setTimeout(() => {
                     document.getElementById('winModalBox').classList.add('show');
                     
-                    // Шашу (Конфетти)
                     confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, zIndex: 3000, disableForReducedMotion: true });
                     const bigPrizes = ["Көлік", "Elantra", "Бизнес тур", "Бизнес Пакет", "1 000 000 ₸", "Dyson", "Алтын"];
                     if (bigPrizes.includes(prizeFromBot)) {
@@ -407,9 +417,24 @@
             }, 1200); 
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // 6. ЖАБУ + БОТҚА СИГНАЛ ЖІБЕРУ
+        // 
+        // ⚠️ МАҢЫЗДЫ ӨЗГЕРІС:
+        // Бұрын: tg.sendData("update_tickets") — бот мұны ұстамайтын
+        // Жаңа: tg.sendData("gift_opened") — бот ұстайды, жеткізу 
+        // батырмасын БІРДЕН шығарады (15 секунд күтпей).
+        // ═══════════════════════════════════════════════════════════════
         function closeApp() {
-            try { tg.sendData("update_tickets"); } catch(e) {}
-            try { tg.close(); } catch(e) { window.close(); }
+            try { 
+                if (tg) tg.sendData("gift_opened"); 
+            } catch(e) {}
+            try { 
+                if (tg) tg.close(); 
+                else window.close();
+            } catch(e) { 
+                window.close(); 
+            }
         }
 
         // БАСТАУ
