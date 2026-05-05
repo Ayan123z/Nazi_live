@@ -268,16 +268,17 @@
     }
 
     // ════════════════════════════════════════════════════════
-    // localStorage қорғанысы
+    // localStorage қорғанысы — ӨШІРІЛДІ
+    // Себебі: Бот DB-сінде UNIQUE file_hash бар — бір чек 2 рет өтпейді.
+    // localStorage браузер кэшінде қалып, нағыз клиенттерді де
+    // блоктап тастайтын еді. DB қорғанысы жеткілікті.
     // ════════════════════════════════════════════════════════
     function isLocallyOpened() {
-        try { return localStorage.getItem(lockKey) === 'true'; }
-        catch(e) { return false; }
+        return false;  // Әрқашан false — DB қорғанысына сенеміз
     }
 
     function markLocallyOpened() {
-        try { localStorage.setItem(lockKey, 'true'); }
-        catch(e) {}
+        // Ештеңе істемейді
     }
 
     // ════════════════════════════════════════════════════════
