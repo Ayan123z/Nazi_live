@@ -268,17 +268,28 @@
     }
 
     // ════════════════════════════════════════════════════════
-    // localStorage қорғанысы — ӨШІРІЛДІ
-    // Себебі: Бот DB-сінде UNIQUE file_hash бар — бір чек 2 рет өтпейді.
-    // localStorage браузер кэшінде қалып, нағыз клиенттерді де
-    // блоктап тастайтын еді. DB қорғанысы жеткілікті.
+    // localStorage қорғанысы — attempt бойынша
+    //
+    // ҚАЛАЙ ЖҰМЫС ІСТЕЙДІ:
+    // Бот әр PDF чекке БӨЛЕК row_id жасайды (1, 2, 3, 4...)
+    // URL-да: ?attempt=123 — бұл сол row_id
+    // localStorage кілті: "nazi_lock_123" — бөлек әр attempt үшін
+    //
+    // Жаңа чек → жаңа row_id → жаңа кілт → ашылады ✅
+    // Ескі чек → ескі row_id → ескі кілт → ашылмайды ❌
     // ════════════════════════════════════════════════════════
     function isLocallyOpened() {
-        return false;  // Әрқашан false — DB қорғанысына сенеміз
+        try {
+            return localStorage.getItem(lockKey) === 'true';
+        } catch(e) {
+            return false;
+        }
     }
 
     function markLocallyOpened() {
-        // Ештеңе істемейді
+        try {
+            localStorage.setItem(lockKey, 'true');
+        } catch(e) {}
     }
 
     // ════════════════════════════════════════════════════════
