@@ -196,6 +196,13 @@
         } catch(e) {}
         
         document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // FIX: XSS Қауіпсіздік функциясы қосылды
+        function escapeHTML(str) {
+            return String(str).replace(/[&<>'"]/g, function(tag) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag;
+            });
+        }
         
         // ═══════════════════════════════════════════════════════════════
         // 2. ПАРАМЕТРЛЕРДІ ОҚУ
@@ -218,6 +225,7 @@
             prizeFromBot = "Косметичка";
         }
         
+        // FIX: innerText қауіпсіз (XSS-тен қорғалған)
         document.getElementById('userIdDisp').innerText = userId;
         
         // ═══════════════════════════════════════════════════════════════
@@ -393,9 +401,10 @@
                 markLocallyOpened(); 
                 
                 const img = PRIZE_IMAGES[prizeFromBot] || "bag.png"; 
+                // FIX: XSS осалдығы escapeHTML арқылы тазартылды
                 document.getElementById('prizeResult').innerHTML = `
                     <img src="${img}" class="res-img" onerror="this.src='https://placehold.co/160/000/d4af37?text=?'">
-                    <h3 style="font-size:1.4rem; margin:0; color:#fff;">${prizeFromBot}</h3>
+                    <h3 style="font-size:1.4rem; margin:0; color:#fff;">${escapeHTML(prizeFromBot)}</h3>
                 `;
                 
                 document.getElementById('winModal').style.display = 'flex';
@@ -403,14 +412,21 @@
                 setTimeout(() => {
                     document.getElementById('winModalBox').classList.add('show');
                     
-                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, zIndex: 3000, disableForReducedMotion: true });
-                    const bigPrizes = ["Көлік", "Elantra", "Бизнес тур", "Бизнес Пакет", "1 000 000 ₸", "Dyson", "Алтын"];
-                    if (bigPrizes.includes(prizeFromBot)) {
-                        setTimeout(() => { confetti({ particleCount: 200, spread: 130, origin: { y: 0.5 }, zIndex: 3000, disableForReducedMotion: true }); }, 400);
-                        setTimeout(() => {
-                            confetti({ particleCount: 150, spread: 100, angle: 60, origin: { x: 0, y: 0.6 }, zIndex: 3000, disableForReducedMotion: true });
-                            confetti({ particleCount: 150, spread: 100, angle: 120, origin: { x: 1, y: 0.6 }, zIndex: 3000, disableForReducedMotion: true });
-                        }, 800);
+                    // FIX: Confetti функциясына try...catch қосылды, егер CDN жүктелмесе код құламауы үшін
+                    try {
+                        if (typeof confetti === 'function') {
+                            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, zIndex: 3000, disableForReducedMotion: true });
+                            const bigPrizes = ["Көлік", "Elantra", "Бизнес тур", "Бизнес Пакет", "1 000 000 ₸", "Dyson", "Алтын"];
+                            if (bigPrizes.includes(prizeFromBot)) {
+                                setTimeout(() => { confetti({ particleCount: 200, spread: 130, origin: { y: 0.5 }, zIndex: 3000, disableForReducedMotion: true }); }, 400);
+                                setTimeout(() => {
+                                    confetti({ particleCount: 150, spread: 100, angle: 60, origin: { x: 0, y: 0.6 }, zIndex: 3000, disableForReducedMotion: true });
+                                    confetti({ particleCount: 150, spread: 100, angle: 120, origin: { x: 1, y: 0.6 }, zIndex: 3000, disableForReducedMotion: true });
+                                }, 800);
+                            }
+                        }
+                    } catch (err) {
+                        console.warn("Confetti animation skipped:", err);
                     }
                 }, 50);
                 
@@ -427,10 +443,12 @@
         // ═══════════════════════════════════════════════════════════════
         function closeApp() {
             try { 
-                if (tg) tg.sendData("gift_opened"); 
+                // FIX: tg.sendData функциясының бар-жоғы тексеріледі (error болмауы үшін)
+                if (tg && typeof tg.sendData === 'function') tg.sendData("gift_opened"); 
             } catch(e) {}
             try { 
-                if (tg) tg.close(); 
+                // FIX: tg.close функциясының бар-жоғы тексеріледі
+                if (tg && typeof tg.close === 'function') tg.close(); 
                 else window.close();
             } catch(e) { 
                 window.close(); 
