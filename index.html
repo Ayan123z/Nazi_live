@@ -8,87 +8,119 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root { --gold: #d4af37; --bg: #050505; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body {
-            background-color: var(--bg); color: #fff; font-family: 'Montserrat', sans-serif;
-            margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;
-            user-select: none; -webkit-user-select: none; min-height: 100vh;
-            overflow-x: hidden; overscroll-behavior-y: none;
+        
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
         }
-        .sparkle {
-            position: fixed; bottom: -10px; background: #d4af37; border-radius: 50%;
-            pointer-events: none; opacity: 0.3; z-index: 1; animation: floatUp linear infinite;
+        
+        body { 
+            background-color: var(--bg); 
+            color: #fff; 
+            font-family: 'Montserrat', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            user-select: none; 
+            -webkit-user-select: none; 
+            min-height: 100vh; 
+            overflow-x: hidden; 
+            overscroll-behavior-y: none; 
+        }
+        
+        .sparkle { 
+            position: fixed; bottom: -10px; background: #d4af37; border-radius: 50%; 
+            pointer-events: none; opacity: 0.3; z-index: 1; animation: floatUp linear infinite; 
         }
         @keyframes floatUp {
             0% { transform: translateY(0); opacity: 0; }
-            10% { opacity: 0.5; } 90% { opacity: 0.5; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
             100% { transform: translateY(-110vh); opacity: 0; }
         }
-        .header {
-            width: 100%; padding: 15px 20px; display: flex; justify-content: space-between;
-            font-size: 0.9rem; border-bottom: 1px solid rgba(212,175,55,0.2);
-            background: #0a0a0a; z-index: 100; position: sticky; top: 0;
+
+        .header { 
+            width: 100%; padding: 15px 20px; display: flex; justify-content: space-between; 
+            font-size: 0.9rem; border-bottom: 1px solid rgba(212, 175, 55, 0.2); 
+            background: #0a0a0a; 
+            z-index: 100; position: sticky; top: 0; 
         }
         .id-val { color: var(--gold); font-weight: 900; }
-        .container {
-            width: 100%; max-width: 500px; padding: 15px;
-            display: flex; flex-direction: column; align-items: center; z-index: 10;
+        
+        .container { 
+            width: 100%; max-width: 500px; padding: 15px; 
+            display: flex; flex-direction: column; align-items: center; z-index: 10; 
         }
-        .section-title {
-            font-weight: 900; font-size: 1.2rem; color: var(--gold);
-            text-transform: uppercase; margin: 10px 0 20px 0; text-align: center; line-height: 1.3;
+        
+        .section-title { 
+            font-weight: 900; font-size: 1.2rem; color: var(--gold); 
+            text-transform: uppercase; margin: 10px 0 20px 0; text-align: center; line-height: 1.3; 
         }
+        
         .prize-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; margin-bottom: 15px; }
-        .prize-card {
-            background: #111; border: 1px solid rgba(212,175,55,0.3); border-radius: 10px;
-            padding: 8px 2px; display: flex; flex-direction: column; align-items: center;
-            justify-content: center; height: 90px; text-align: center; position: relative;
+        .prize-card { 
+            background: #111; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 10px; 
+            padding: 8px 2px; display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; height: 90px; text-align: center; position: relative; 
         }
+        
         .main-prize-card { background: #1a1505; border: 1.5px solid var(--gold); z-index: 2; }
-        .main-tag {
-            position: absolute; top: -8px; background: var(--gold); color: #000; padding: 2px 4px;
-            border-radius: 4px; font-size: 0.35rem; font-weight: 900; white-space: nowrap; z-index: 5; text-transform: uppercase;
+        .main-tag { 
+            position: absolute; top: -8px; background: var(--gold); color: #000; padding: 2px 4px; 
+            border-radius: 4px; font-size: 0.35rem; font-weight: 900; white-space: nowrap; z-index: 5; text-transform: uppercase; 
         }
+        
         .prize-img { width: 75%; height: 40px; object-fit: contain; }
         .prize-name { font-size: 0.45rem; font-weight: 700; margin-top: 5px; color: #fff; text-transform: uppercase; }
+        
         .chests-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; margin-top: 10px; }
+        
         .chest-card { cursor: pointer; position: relative; }
         .chest-img { width: 100%; display: block; }
+        
         @keyframes safeShake {
             0%, 100% { transform: translateX(0); }
             10%, 30%, 50%, 70%, 90% { transform: translateX(-4px) rotate(-3deg); }
             20%, 40%, 60%, 80% { transform: translateX(4px) rotate(3deg); }
         }
         .shaking .chest-img { animation: safeShake 1.2s ease-in-out both; }
-        .open-btn {
-            background: linear-gradient(45deg, #bf953f, #fcf6ba, #bf953f); color: #000; border: none;
-            padding: 16px; border-radius: 30px; font-size: 1rem; font-weight: 900; width: 100%;
-            margin-top: 10px; cursor: pointer;
+
+        .open-btn { 
+            background: linear-gradient(45deg, #bf953f, #fcf6ba, #bf953f); color: #000; border: none; 
+            padding: 16px; border-radius: 30px; font-size: 1rem; font-weight: 900; width: 100%; 
+            margin-top: 10px; cursor: pointer; 
         }
         .open-btn:active { transform: scale(0.95); background: #d4af37; }
-        .modal {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.98); display:none; align-items:center; justify-content:center; z-index:2000;
+        
+        .modal { 
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            background: rgba(0,0,0,0.98); display:none; align-items:center; justify-content:center; z-index:2000; 
         }
-        .modal-box {
-            background: #0a0a0a; border: 2px solid var(--gold); border-radius: 20px; width: 85%;
-            max-width: 400px; padding: 30px 20px; text-align: center; transform: scale(0.8); opacity: 0;
-            transition: transform 0.3s ease, opacity 0.3s ease;
+        .modal-box { 
+            background: #0a0a0a; border: 2px solid var(--gold); border-radius: 20px; width: 85%; 
+            max-width: 400px; padding: 30px 20px; text-align: center; transform: scale(0.8); opacity: 0; 
+            transition: transform 0.3s ease, opacity 0.3s ease; 
         }
         .modal-box.show { transform: scale(1); opacity: 1; }
         .res-img { width: 160px; height: 130px; object-fit: contain; margin-bottom: 15px; }
-        .close-btn {
-            background: var(--gold); color: #000; border: none; padding: 15px;
-            width: 100%; border-radius: 30px; font-weight: 900; font-size: 1rem;
-            margin-top: 20px; cursor: pointer;
+
+        .close-btn { 
+            background: var(--gold); color: #000; border: none; padding: 15px; 
+            width: 100%; border-radius: 30px; font-weight: 900; font-size: 1rem; 
+            margin-top: 20px; cursor: pointer; 
         }
+
         .preload-images { position: absolute; width: 0; height: 0; overflow: hidden; z-index: -1; }
+
         #loadingScreen, #errorScreen {
             position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column;
             align-items: center; justify-content: center; gap: 20px; z-index: 9999;
         }
         #loadingScreen.hide { opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
         #errorScreen { display: none; padding: 30px; text-align: center; z-index: 9998; }
+        
         .spinner {
             width: 50px; height: 50px; border: 3px solid rgba(212,175,55,0.2);
             border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite;
@@ -103,12 +135,7 @@
 </head>
 <body>
     <div id="loadingScreen"><div class="spinner"></div><div id="loadingText">Жүктелуде...</div></div>
-    <div id="errorScreen">
-        <div class="error-icon">🔒</div>
-        <div id="errorMsg">Қате шықты</div>
-        <div class="error-sub" id="errorSub">Ботқа оралып қайта көріңіз</div>
-        <button class="error-btn" onclick="closeApp()">БОТҚА ОРАЛУ</button>
-    </div>
+    <div id="errorScreen"><div class="error-icon">🔒</div><div id="errorMsg">Қате шықты</div><div class="error-sub" id="errorSub">Ботқа оралып қайта көріңіз</div><button class="error-btn" onclick="closeApp()">БОТҚА ОРАЛУ</button></div>
 
     <div class="preload-images" id="preloadBox"></div>
     <div id="dust-container"></div>
@@ -117,23 +144,27 @@
         <div>ID: <span class="id-val" id="userIdDisp">...</span></div>
         <div style="color: #25d366; font-weight: 900;">LIVE 🟢</div>
     </div>
-
+    
     <div class="container" id="mainView" style="display:none;">
-        <div class="section-title">NAZIMEN КОБДИШАСЫНАН<br>СЫЙЛЫҒЫҢЫЗДЫ АЛЫҢЫЗ</div>
+        <div class="section-title">NAZIMEN КОБДИШАСЫНАН<br> СЫЙЛЫҒЫҢЫЗДЫ АЛЫҢЫЗ</div>
+        
         <div class="prize-grid">
             <div class="prize-card"><img src="money.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">1 000 000 ₸</div></div>
             <div class="prize-card"><img src="dyson.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Dyson</div></div>
             <div class="prize-card"><img src="sumka.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Сөмке</div></div>
             <div class="prize-card"><img src="Satuar.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Сотуар</div></div>
+            
             <div class="prize-card"><img src="golden (1).png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Алтын</div></div>
             <div class="prize-card main-prize-card"><div class="main-tag">🏆 Басты сыйлық</div><img src="elantra.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Көлік</div></div>
             <div class="prize-card main-prize-card"><div class="main-tag">🏆 Басты сыйлық</div><img src="china (1).png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Бизнес тур</div></div>
             <div class="prize-card"><img src="business.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Бизнес Пакет</div></div>
+            
             <div class="prize-card"><img src="parfum.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Парфюм</div></div>
             <div class="prize-card"><img src="cosmitic.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Косметика</div></div>
             <div class="prize-card"><img src="cushion.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Кушон</div></div>
             <div class="prize-card"><img src="bag.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Косметичка</div></div>
         </div>
+        
         <button class="open-btn" id="openBtn">🎁 СЫЙЛЫҒЫМДЫ АШУ</button>
     </div>
 
@@ -153,341 +184,261 @@
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-    // ════════════════════════════════════════════════════════
-    // 🔐 ҚАУІПСІЗДІК ЖҮЙЕСІ — HMAC-SHA256
-    //
-    // Жұмыс принципі:
-    //   БОТ жағы: sign = HMAC_SHA256(SECRET_KEY, "userId:attemptId:prize")
-    //   HTML жағы: URL-дегі sign-ды қайта есептеп тексереді.
-    //   Егер sign сәйкессе → сыйлық нақты, ашуға болады.
-    //   Егер сәйкес емес → хакер URL-ді өзгерткен, блоклау.
-    //
-    // SECRET_KEY — тек бот пен сервер біледі, URL-де жоқ.
-    // Бұл кілт bot.py-дағы GIFT_HMAC_SECRET-пен бірдей болуы КЕРЕК.
-    // ════════════════════════════════════════════════════════
-
-    // ⚠️ БУЛ КІЛТТІ .env-ке КӨШІРІП, bot.py-дағымен БІРДЕЙ ЖАЗЫҢЫЗ:
-    // GIFT_HMAC_SECRET=nazzizaru_super_secret_2026_change_me
-    const GIFT_HMAC_SECRET = "db0c9be54c5450976ff6f37a89693ba21186e9206bc49cf52706d433d4838aa6";
-
-    // ════════════════════════════════════════════════════════
-    // HMAC-SHA256 таза JS-пен (SubtleCrypto Web API)
-    // Сыртқы кітапхана қажет емес — браузерге кірістірілген.
-    // ════════════════════════════════════════════════════════
-    async function hmacSHA256(secret, message) {
-        const enc = new TextEncoder();
-        const key = await crypto.subtle.importKey(
-            "raw", enc.encode(secret),
-            { name: "HMAC", hash: "SHA-256" },
-            false, ["sign"]
-        );
-        const sig = await crypto.subtle.sign("HMAC", key, enc.encode(message));
-        return Array.from(new Uint8Array(sig))
-            .map(b => b.toString(16).padStart(2, '0'))
-            .join('');
-    }
-
-    // ════════════════════════════════════════════════════════
-    // URL параметрлерін оқу
-    // ════════════════════════════════════════════════════════
-    const tg = window.Telegram?.WebApp;
-    try {
-        if (tg) {
-            tg.expand();
-            if (typeof tg.disableVerticalSwipes === 'function') tg.disableVerticalSwipes();
-        }
-    } catch(e) {}
-
-    document.addEventListener('contextmenu', e => e.preventDefault());
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId    = urlParams.get('id')      || "";
-    const attemptId = urlParams.get('attempt') || "";
-    const signFromUrl = urlParams.get('sig')   || "";
-
-    // prize URL-де ЖОҚ — тек sign ішінде зашифрланған
-    // Бот sign жасағанда prize-ды ішіне кіріктіреді,
-    // HTML тексергеннен кейін prize-ды sign-нан алады.
-    // Бірақ WebApp-та prize-ды bot жібереді (тек display үшін).
-    // Нақты prize DB-де сақталған — URL-дегі prize тек ВИЗУАЛ.
-    // Хакер prize-ды өзгертсе → sign сәйкес келмейді → блок.
-    let prizeFromUrl = "";
-    try {
-        const raw = urlParams.get('prize');
-        if (raw) prizeFromUrl = decodeURIComponent(raw);
-    } catch(e) {}
-
-    document.getElementById('userIdDisp').innerText = userId || "БЕЛГІСІЗ";
-
-    // localStorage кілті — attempt бойынша бөлек
-    const lockKey = "nazi_lock_" + attemptId;
-
-    const PRIZE_IMAGES = {
-        "1 000 000 ₸": "money.png",
-        "Dyson": "dyson.png",
-        "Сөмке": "sumka.png",
-        "Сотуар": "Satuar.png",
-        "Алтын": "golden (1).png",
-        "Көлік": "elantra.png",
-        "Elantra": "elantra.png",
-        "Бизнес тур": "china (1).png",
-        "Бизнес Пакет": "business.png",
-        "Парфюм": "parfum.png",
-        "Косметика": "cosmitic.png",
-        "Кушон": "cushion.png",
-        "Косметичка": "bag.png"
-    };
-
-    // ════════════════════════════════════════════════════════
-    // SIGNATURE ТЕКСЕРУ
-    // Бот sign жасайды: HMAC(SECRET, "userId:attemptId:prize")
-    // HTML дәл сол формуламен қайта есептеп салыстырады.
-    // ════════════════════════════════════════════════════════
-    async function verifySignature() {
-        // Параметрлер жоқ болса — жарамсыз
-        if (!userId || !attemptId || !signFromUrl || !prizeFromUrl) {
-            return false;
-        }
-
-        // Дәл боттағы формуламен: "userId:attemptId:prize"
-        const message = `${userId}:${attemptId}:${prizeFromUrl}`;
-        const expectedSign = await hmacSHA256(GIFT_HMAC_SECRET, message);
-
-        // Timing-safe салыстыру (brute-force-қа қарсы)
-        return timingSafeEqual(signFromUrl.toLowerCase(), expectedSign.toLowerCase());
-    }
-
-    // Уақытқа тәуелді емес салыстыру (timing attack-қа қарсы)
-    function timingSafeEqual(a, b) {
-        if (a.length !== b.length) return false;
-        let diff = 0;
-        for (let i = 0; i < a.length; i++) {
-            diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-        }
-        return diff === 0;
-    }
-
-    // ════════════════════════════════════════════════════════
-    // localStorage қорғанысы — attempt бойынша
-    //
-    // ҚАЛАЙ ЖҰМЫС ІСТЕЙДІ:
-    // Бот әр PDF чекке БӨЛЕК row_id жасайды (1, 2, 3, 4...)
-    // URL-да: ?attempt=123 — бұл сол row_id
-    // localStorage кілті: "nazi_lock_123" — бөлек әр attempt үшін
-    //
-    // Жаңа чек → жаңа row_id → жаңа кілт → ашылады ✅
-    // Ескі чек → ескі row_id → ескі кілт → ашылмайды ❌
-    // ════════════════════════════════════════════════════════
-    function isLocallyOpened() {
+        // ═══════════════════════════════════════════════════════════════
+        // 1. БАПТАУЛАР
+        // ═══════════════════════════════════════════════════════════════
+        const tg = window.Telegram?.WebApp; 
         try {
-            return localStorage.getItem(lockKey) === 'true';
-        } catch(e) {
-            return false;
-        }
-    }
-
-    function markLocallyOpened() {
-        try {
-            localStorage.setItem(lockKey, 'true');
+            if (tg) {
+                tg.expand();
+                if (typeof tg.disableVerticalSwipes === 'function') tg.disableVerticalSwipes();
+            }
         } catch(e) {}
-    }
-
-    // ════════════════════════════════════════════════════════
-    // ҚАТЕ ЭКРАНЫН КӨРСЕТУ
-    // ════════════════════════════════════════════════════════
-    function showError(message, sub) {
-        document.getElementById('loadingScreen').style.display = 'none';
-        document.getElementById('mainView').style.display = 'none';
-        document.getElementById('chestView').style.display = 'none';
-        document.getElementById('errorMsg').innerText = message;
-        if (sub) document.getElementById('errorSub').innerText = sub;
-        document.getElementById('errorScreen').style.display = 'flex';
-    }
-
-    // ════════════════════════════════════════════════════════
-    // СУРЕТТЕРДІ АЛДЫН АЛА ЖҮКТЕУ
-    // ════════════════════════════════════════════════════════
-    function preloadImages() {
-        const box = document.getElementById('preloadBox');
-        const allImages = [...new Set(Object.values(PRIZE_IMAGES)), 'chest.png'];
-        let loaded = 0;
-        return new Promise((resolve) => {
-            if (allImages.length === 0) return resolve();
-            const checkDone = () => { loaded++; if (loaded >= allImages.length) resolve(); };
-            allImages.forEach(src => {
-                const img = new Image();
-                img.onload = img.onerror = checkDone;
-                img.src = src;
-                box.appendChild(img);
-            });
-            setTimeout(resolve, 3000);
-        });
-    }
-
-    function createSparkles() {
-        const dc = document.getElementById('dust-container');
-        for(let i = 0; i < 10; i++) {
-            let el = document.createElement('div');
-            el.className = 'sparkle';
-            el.style.left = Math.random() * 100 + 'vw';
-            el.style.width = el.style.height = (Math.random() * 2 + 1) + 'px';
-            el.style.animationDuration = (Math.random() * 4 + 6) + 's';
-            el.style.animationDelay = (Math.random() * 5) + 's';
-            dc.appendChild(el);
-        }
-    }
-
-    function createChests() {
-        const grid = document.getElementById('chestsGrid');
-        for (let i = 0; i < 12; i++) {
-            const card = document.createElement('div');
-            card.className = 'chest-card';
-            card.setAttribute('role', 'button');
-            const img = document.createElement('img');
-            img.src = 'chest.png';
-            img.className = 'chest-img';
-            img.onerror = () => { img.src = 'https://placehold.co/150/111/d4af37?text=🎁'; };
-            card.appendChild(img);
-            card.addEventListener('click', () => revealPrize(card));
-            grid.appendChild(card);
-        }
-    }
-
-    // ════════════════════════════════════════════════════════
-    // БАСТАУ — SIGNATURE + ЛОКАЛЬДЫ ТЕКСЕРУ
-    // ════════════════════════════════════════════════════════
-    async function init() {
-        // 1) Signature тексеру (HMAC-SHA256)
-        const isValid = await verifySignature();
-        if (!isValid) {
-            return showError(
-                '🔒 Сілтеме жарамсыз немесе өзгертілген!',
-                'Ботқа оралып сыйлық батырмасын қайта басыңыз'
-            );
+        
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        
+        // ═══════════════════════════════════════════════════════════════
+        // 2. ПАРАМЕТРЛЕРДІ ОҚУ
+        // ═══════════════════════════════════════════════════════════════
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('id') || "БЕЛГІСІЗ";
+        let attemptId = urlParams.get('attempt');
+        
+        // Егер attempt жоқ болса — кездейсоқ жасаймыз, ол ескі (legacy) деп белгіленеді
+        if (!attemptId) {
+            attemptId = "legacy_" + userId + "_" + Date.now();
         }
 
-        // 2) Бұл attempt бұрын ашылған ба?
-        if (isLocallyOpened()) {
-            return showError(
-                '❌ Сіз бұл сыйлықты ашып қойғансыз!',
-                'Жаңа сыйлық алу үшін жаңа чек жіберіңіз'
-            );
+        // Сыйлық атауы (URL-ден декодтау)
+        let prizeFromBot = "Косметичка";
+        try {
+            const raw = urlParams.get('prize');
+            if (raw) prizeFromBot = decodeURIComponent(raw);
+        } catch(e) {
+            prizeFromBot = "Косметичка";
+        }
+        
+        document.getElementById('userIdDisp').innerText = userId;
+        
+        // ═══════════════════════════════════════════════════════════════
+        // ⚠️ НЕГІЗГІ ҚАТЕ ТҮЗЕТІЛДІ:
+        // 
+        // ЕСКІ КОД "сыйлық ашылды" белгісін екі жерде сақтайтын:
+        //   1. localStorage (браузер жадында)
+        //   2. tg.CloudStorage (Telegram бұлтында)
+        // 
+        // Telegram CloudStorage асинхронды әрі баяу жұмыс істейді,
+        // ол ескі мәндерді қайтаратын. Сондықтан жаңа чек жіберсек те,
+        // ол "ашылды" деп қате жауап беретін.
+        // 
+        // ЖАҢА КОД тек localStorage-ті ғана қолданады. Бұл сенімді әрі
+        // жылдам. Боттың өзінде UNIQUE индекс қорғанысы бар, сондықтан
+        // қосымша CloudStorage қажет емес.
+        // ═══════════════════════════════════════════════════════════════
+        const lockKey = "nazi_lock_" + attemptId;
+
+        const PRIZE_IMAGES = {
+            "1 000 000 ₸": "money.png", "Dyson": "dyson.png", "Сөмке": "sumka.png",
+            "Сотуар": "Satuar.png", "Алтын": "golden (1).png", "Көлік": "elantra.png", 
+            "Elantra": "elantra.png", "Бизнес тур": "china (1).png", "Бизнес Пакет": "business.png", 
+            "Парфюм": "parfum.png", "Косметика": "cosmitic.png", "Кушон": "cushion.png", "Косметичка": "bag.png"
+        };
+
+        // ═══════════════════════════════════════════════════════════════
+        // 3. КӨМЕКШІ ФУНКЦИЯЛАР
+        // ═══════════════════════════════════════════════════════════════
+
+        function createSparkles() {
+            const dc = document.getElementById('dust-container');
+            for(let i=0; i<10; i++) {
+                let el = document.createElement('div');
+                el.className = 'sparkle';
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.width = el.style.height = (Math.random() * 2 + 1) + 'px';
+                el.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                el.style.animationDelay = (Math.random() * 5) + 's';
+                dc.appendChild(el);
+            }
         }
 
-        // 3) Суреттерді жүктеу
-        await preloadImages();
-
-        const loading = document.getElementById('loadingScreen');
-        loading.classList.add('hide');
-        setTimeout(() => { loading.style.display = 'none'; }, 400);
-
-        document.getElementById('mainView').style.display = 'flex';
-        createSparkles();
-        createChests();
-        document.getElementById('openBtn').addEventListener('click', goToChests);
-    }
-
-    function goToChests() {
-        if (isLocallyOpened()) {
-            return showError('❌ Сіз бұл сыйлықты ашып қойғансыз!', 'Жаңа чек жіберіңіз');
-        }
-        document.getElementById('mainView').style.display = 'none';
-        document.getElementById('chestView').style.display = 'flex';
-    }
-
-    // ════════════════════════════════════════════════════════
-    // СЫЙЛЫҚТЫ АШУ
-    // ════════════════════════════════════════════════════════
-    let isOpening = false;
-
-    async function revealPrize(element) {
-        if (isOpening) return;
-        if (isLocallyOpened()) {
-            return showError('❌ Сіз бұл сыйлықты ашып қойғансыз!', 'Жаңа чек жіберіңіз');
+        function createChests() {
+            const grid = document.getElementById('chestsGrid');
+            for (let i = 0; i < 12; i++) {
+                const card = document.createElement('div');
+                card.className = 'chest-card';
+                card.setAttribute('role', 'button');
+                
+                const img = document.createElement('img');
+                img.src = 'chest.png';
+                img.className = 'chest-img';
+                img.onerror = () => { img.src = 'https://placehold.co/150/111/d4af37?text=🎁'; };
+                
+                card.appendChild(img);
+                card.addEventListener('click', () => revealPrize(card));
+                grid.appendChild(card);
+            }
         }
 
-        // Ашу алдында signature-ді тағы бір рет тексеру (paranoia mode)
-        const isValid = await verifySignature();
-        if (!isValid) {
-            return showError('🔒 Сілтеме жарамсыз!', 'Ботқа оралыңыз');
-        }
-
-        isOpening = true;
-
-        // Барлық қобдишаларды бір мезетте бұғаттаймыз
-        document.querySelectorAll('.chest-card').forEach(c => {
-            c.style.pointerEvents = 'none';
-        });
-
-        element.classList.add('shaking');
-
-        setTimeout(() => {
-            // Локалды белгілеу (UI қорғанысы)
-            markLocallyOpened();
-
-            const img = PRIZE_IMAGES[prizeFromUrl] || "bag.png";
-            document.getElementById('prizeResult').innerHTML = `
-                <img src="${sanitizeForHTML(img)}" class="res-img"
-                     onerror="this.src='https://placehold.co/160/000/d4af37?text=?'">
-                <h3 style="font-size:1.4rem; margin:0; color:#fff;">${sanitizeForHTML(prizeFromUrl)}</h3>
-            `;
-
-            document.getElementById('winModal').style.display = 'flex';
-
-            setTimeout(() => {
-                document.getElementById('winModalBox').classList.add('show');
-
-                confetti({
-                    particleCount: 100, spread: 70,
-                    origin: { y: 0.6 }, zIndex: 3000,
-                    disableForReducedMotion: true
+        function preloadImages() {
+            const box = document.getElementById('preloadBox');
+            const allImages = [...new Set(Object.values(PRIZE_IMAGES)), 'chest.png'];
+            let loaded = 0;
+            return new Promise((resolve) => {
+                if (allImages.length === 0) return resolve();
+                const checkDone = () => { loaded++; if (loaded >= allImages.length) resolve(); };
+                allImages.forEach(src => {
+                    const img = new Image();
+                    img.onload = img.onerror = checkDone;
+                    img.src = src;
+                    box.appendChild(img);
                 });
-
-                const bigPrizes = ["Көлік", "Elantra", "Бизнес тур", "Бизнес Пакет", "1 000 000 ₸", "Dyson", "Алтын"];
-                if (bigPrizes.includes(prizeFromUrl)) {
-                    setTimeout(() => {
-                        confetti({ particleCount: 200, spread: 130, origin: { y: 0.5 }, zIndex: 3000, disableForReducedMotion: true });
-                    }, 400);
-                    setTimeout(() => {
-                        confetti({ particleCount: 150, spread: 100, angle: 60, origin: { x: 0, y: 0.6 }, zIndex: 3000, disableForReducedMotion: true });
-                        confetti({ particleCount: 150, spread: 100, angle: 120, origin: { x: 1, y: 0.6 }, zIndex: 3000, disableForReducedMotion: true });
-                    }, 800);
-                }
-            }, 50);
-
-        }, 1200);
-    }
-
-    // XSS қорғанысы — HTML-ге кірістірер алдында тазалау
-    function sanitizeForHTML(str) {
-        if (!str) return '';
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#x27;');
-    }
-
-    // ════════════════════════════════════════════════════════
-    // ЖАБУ + БОТҚА СИГНАЛ
-    // tg.sendData("gift_opened") → бот жеткізу батырмасын
-    // БІРДЕН шығарады (15 сек күтпей).
-    // ════════════════════════════════════════════════════════
-    function closeApp() {
-        try {
-            if (tg && tg.sendData) tg.sendData("gift_opened");
-        } catch(e) {}
-        try {
-            if (tg) tg.close();
-            else window.close();
-        } catch(e) {
-            window.close();
+                setTimeout(resolve, 3000);
+            });
         }
-    }
 
-    // БАСТАУ
-    init();
+        // ═══════════════════════════════════════════════════════════════
+        // ҚОРҒАНЫС: ТЕК LOCALSTORAGE АРҚЫЛЫ ТЕКСЕРЕМІЗ
+        // 
+        // Бұл — әр attempt үшін бөлек кілт. Жаңа чек = жаңа attempt = 
+        // жаңа кілт. Сондықтан жаңа чек әрқашан ашылады.
+        // ═══════════════════════════════════════════════════════════════
+
+        function isLocallyOpened() {
+            try {
+                return localStorage.getItem(lockKey) === 'true';
+            } catch(e) {
+                // Егер localStorage қол жетпесе (тыйым салынса), қорғанысты өткізіп жіберу
+                return false;
+            }
+        }
+
+        function markLocallyOpened() {
+            try {
+                localStorage.setItem(lockKey, 'true');
+            } catch(e) {
+                // Қате болса — еш проблема жоқ, бот UNIQUE-пен қорғайды
+            }
+        }
+
+        function showError(message, sub) {
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('mainView').style.display = 'none';
+            document.getElementById('chestView').style.display = 'none';
+            document.getElementById('errorMsg').innerText = message;
+            if (sub) document.getElementById('errorSub').innerText = sub;
+            document.getElementById('errorScreen').style.display = 'flex';
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 4. БАСТАУ ФУНКЦИЯСЫ
+        // ═══════════════════════════════════════════════════════════════
+        async function init() {
+            // Локалды тексеру: бұл нақты attempt бұрын ашылған ба?
+            if (isLocallyOpened()) {
+                return showError('❌ Сіз бұл сыйлықты ашып қойғансыз!', 'Жаңа сыйлық алу үшін жаңа чек жіберіңіз');
+            }
+
+            await preloadImages();
+
+            const loading = document.getElementById('loadingScreen');
+            loading.classList.add('hide');
+            setTimeout(() => { loading.style.display = 'none'; }, 400);
+
+            document.getElementById('mainView').style.display = 'flex';
+            createSparkles();
+            createChests();
+
+            document.getElementById('openBtn').addEventListener('click', goToChests);
+        }
+
+        function goToChests() {
+            if (isLocallyOpened()) {
+                return showError('❌ Сіз бұл сыйлықты ашып қойғансыз!', 'Жаңа сыйлық алу үшін жаңа чек жіберіңіз');
+            }
+            document.getElementById('mainView').style.display = 'none';
+            document.getElementById('chestView').style.display = 'flex';
+        }
+        
+        let isOpening = false; 
+
+        // ═══════════════════════════════════════════════════════════════
+        // 5. СЫЙЛЫҚТЫ АШУ
+        // 
+        // Серверге барып тексеру алынып тасталды (va-system.ru).
+        // Себептері:
+        //   1. Серверге қосымша жүктеме түсетін
+        //   2. Сервер баяуласа, клиент 5 секунд күтетін
+        //   3. Боттың UNIQUE индексі сенімді жұмыс істейді
+        // 
+        // Жаңа кодта тек локалды қорғаныс — әр attempt бір рет ашылады.
+        // Жаңа чек жіберсе → жаңа attempt → әрине ашылады.
+        // ═══════════════════════════════════════════════════════════════
+        async function revealPrize(element) {
+            if (isOpening) return; 
+            if (isLocallyOpened()) {
+                return showError('❌ Сіз бұл сыйлықты ашып қойғансыз!', 'Жаңа сыйлық алу үшін жаңа чек жіберіңіз');
+            }
+
+            isOpening = true; 
+            
+            // Барлық қобдишаларды бұғаттаймыз — біреуі ғана ашылсын
+            document.querySelectorAll('.chest-card').forEach(c => {
+                c.style.pointerEvents = 'none';
+            });
+            
+            element.classList.add('shaking'); 
+
+            // Анимация үшін аздап күту, содан соң нәтижені көрсету
+            setTimeout(() => {
+                markLocallyOpened(); 
+                
+                const img = PRIZE_IMAGES[prizeFromBot] || "bag.png"; 
+                document.getElementById('prizeResult').innerHTML = `
+                    <img src="${img}" class="res-img" onerror="this.src='https://placehold.co/160/000/d4af37?text=?'">
+                    <h3 style="font-size:1.4rem; margin:0; color:#fff;">${prizeFromBot}</h3>
+                `;
+                
+                document.getElementById('winModal').style.display = 'flex';
+                
+                setTimeout(() => {
+                    document.getElementById('winModalBox').classList.add('show');
+                    
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, zIndex: 3000, disableForReducedMotion: true });
+                    const bigPrizes = ["Көлік", "Elantra", "Бизнес тур", "Бизнес Пакет", "1 000 000 ₸", "Dyson", "Алтын"];
+                    if (bigPrizes.includes(prizeFromBot)) {
+                        setTimeout(() => { confetti({ particleCount: 200, spread: 130, origin: { y: 0.5 }, zIndex: 3000, disableForReducedMotion: true }); }, 400);
+                        setTimeout(() => {
+                            confetti({ particleCount: 150, spread: 100, angle: 60, origin: { x: 0, y: 0.6 }, zIndex: 3000, disableForReducedMotion: true });
+                            confetti({ particleCount: 150, spread: 100, angle: 120, origin: { x: 1, y: 0.6 }, zIndex: 3000, disableForReducedMotion: true });
+                        }, 800);
+                    }
+                }, 50);
+                
+            }, 1200); 
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 6. ЖАБУ + БОТҚА СИГНАЛ ЖІБЕРУ
+        // 
+        // ⚠️ МАҢЫЗДЫ ӨЗГЕРІС:
+        // Бұрын: tg.sendData("update_tickets") — бот мұны ұстамайтын
+        // Жаңа: tg.sendData("gift_opened") — бот ұстайды, жеткізу 
+        // батырмасын БІРДЕН шығарады (15 секунд күтпей).
+        // ═══════════════════════════════════════════════════════════════
+        function closeApp() {
+            try { 
+                if (tg) tg.sendData("gift_opened"); 
+            } catch(e) {}
+            try { 
+                if (tg) tg.close(); 
+                else window.close();
+            } catch(e) { 
+                window.close(); 
+            }
+        }
+
+        // БАСТАУ
+        init();
     </script>
 </body>
 </html>
