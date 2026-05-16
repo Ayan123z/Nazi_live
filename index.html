@@ -67,6 +67,18 @@
         }
         
         .main-prize-card { background: #1a1505; border: 1.5px solid var(--gold); z-index: 2; }
+        
+        /* ЖАҢА: «Көлік» — Басты сыйлық 2 ұяшықты алады (Бизнес тур жойылғаннан кейін орын толтыру үшін) */
+        .main-prize-card.wide { 
+            grid-column: span 2;
+        }
+        .main-prize-card.wide .prize-img { 
+            height: 50px; 
+        }
+        .main-prize-card.wide .prize-name {
+            font-size: 0.6rem;
+        }
+        
         .main-tag { 
             position: absolute; top: -8px; background: var(--gold); color: #000; padding: 2px 4px; 
             border-radius: 4px; font-size: 0.35rem; font-weight: 900; white-space: nowrap; z-index: 5; text-transform: uppercase; 
@@ -148,17 +160,30 @@
     <div class="container" id="mainView" style="display:none;">
         <div class="section-title">NAZIMEN КОБДИШАСЫНАН<br> СЫЙЛЫҒЫҢЫЗДЫ АЛЫҢЫЗ</div>
         
+        <!-- 
+            ЖАҢА ТАЛПУ:
+            Жол 1: 1 000 000 ₸  |  Dyson  |  Сөмке  |  Сотуар        (4 ұяшық)
+            Жол 2: Алтын        |  КӨЛІК (Басты, 2 ұя) |  Сағат      (4 ұяшық = 1+2+1)
+            Жол 3: Парфюм       |  Косметика | Кушон  |  Косметичка  (4 ұяшық)
+            
+            Барлығы: 12 ұяшық (4×3 grid толық сақталды)
+            Өшірілгендер: "Бизнес тур", "Бизнес Пакет"
+            Жаңасы:        "Сағат" (watch.png)
+            Көлік:         2 ұяшықты алады (Бас сыйлық, бұрынғы Бизнес тур орнын толтырды)
+        -->
         <div class="prize-grid">
+            <!-- 1-жол -->
             <div class="prize-card"><img src="money.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">1 000 000 ₸</div></div>
             <div class="prize-card"><img src="dyson.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Dyson</div></div>
             <div class="prize-card"><img src="sumka.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Сөмке</div></div>
             <div class="prize-card"><img src="Satuar.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Сотуар</div></div>
             
+            <!-- 2-жол: Алтын + Көлік (2 ұя) + Сағат -->
             <div class="prize-card"><img src="golden (1).png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Алтын</div></div>
-            <div class="prize-card main-prize-card"><div class="main-tag">🏆 Басты сыйлық</div><img src="elantra.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Көлік</div></div>
-            <div class="prize-card main-prize-card"><div class="main-tag">🏆 Басты сыйлық</div><img src="china (1).png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Бизнес тур</div></div>
-            <div class="prize-card"><img src="business.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Бизнес Пакет</div></div>
+            <div class="prize-card main-prize-card wide"><div class="main-tag">🏆 Басты сыйлық</div><img src="elantra.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Көлік</div></div>
+            <div class="prize-card"><img src="watch.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=⌚'"><div class="prize-name">Сағат</div></div>
             
+            <!-- 3-жол -->
             <div class="prize-card"><img src="parfum.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Парфюм</div></div>
             <div class="prize-card"><img src="cosmitic.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Косметика</div></div>
             <div class="prize-card"><img src="cushion.png" class="prize-img" onerror="this.src='https://placehold.co/100/000/d4af37?text=?'"><div class="prize-name">Кушон</div></div>
@@ -197,7 +222,7 @@
         
         document.addEventListener('contextmenu', event => event.preventDefault());
 
-        // FIX: XSS Қауіпсіздік функциясы қосылды
+        // XSS Қауіпсіздік функциясы
         function escapeHTML(str) {
             return String(str).replace(/[&<>'"]/g, function(tag) {
                 return { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag;
@@ -211,12 +236,10 @@
         const userId = urlParams.get('id') || "БЕЛГІСІЗ";
         let attemptId = urlParams.get('attempt');
         
-        // Егер attempt жоқ болса — кездейсоқ жасаймыз, ол ескі (legacy) деп белгіленеді
         if (!attemptId) {
             attemptId = "legacy_" + userId + "_" + Date.now();
         }
 
-        // Сыйлық атауы (URL-ден декодтау)
         let prizeFromBot = "Косметичка";
         try {
             const raw = urlParams.get('prize');
@@ -225,35 +248,54 @@
             prizeFromBot = "Косметичка";
         }
         
-        // FIX: innerText қауіпсіз (XSS-тен қорғалған)
         document.getElementById('userIdDisp').innerText = userId;
         
-        // ═══════════════════════════════════════════════════════════════
-        // ⚠️ НЕГІЗГІ ҚАТЕ ТҮЗЕТІЛДІ:
-        // 
-        // ЕСКІ КОД "сыйлық ашылды" белгісін екі жерде сақтайтын:
-        //   1. localStorage (браузер жадында)
-        //   2. tg.CloudStorage (Telegram бұлтында)
-        // 
-        // Telegram CloudStorage асинхронды әрі баяу жұмыс істейді,
-        // ол ескі мәндерді қайтаратын. Сондықтан жаңа чек жіберсек те,
-        // ол "ашылды" деп қате жауап беретін.
-        // 
-        // ЖАҢА КОД тек localStorage-ті ғана қолданады. Бұл сенімді әрі
-        // жылдам. Боттың өзінде UNIQUE индекс қорғанысы бар, сондықтан
-        // қосымша CloudStorage қажет емес.
-        // ═══════════════════════════════════════════════════════════════
         const lockKey = "nazi_lock_" + attemptId;
 
+        // ═══════════════════════════════════════════════════════════════
+        // 3. СЫЙЛЫҚ → СУРЕТ КАРТАСЫ
+        // 
+        // ⚠️ ӨЗГЕРІСТЕР:
+        //  • "Бизнес тур"   — өшірілді (бот енді бұл сыйлықты бермейді)
+        //  • "Бизнес Пакет" — өшірілді
+        //  • "Сағат"        — қосылды (watch.png керек GitHub Pages-та!)
+        // ═══════════════════════════════════════════════════════════════
         const PRIZE_IMAGES = {
-            "1 000 000 ₸": "money.png", "Dyson": "dyson.png", "Сөмке": "sumka.png",
-            "Сотуар": "Satuar.png", "Алтын": "golden (1).png", "Көлік": "elantra.png", 
-            "Elantra": "elantra.png", "Бизнес тур": "china (1).png", "Бизнес Пакет": "business.png", 
-            "Парфюм": "parfum.png", "Косметика": "cosmitic.png", "Кушон": "cushion.png", "Косметичка": "bag.png"
+            "1 000 000 ₸": "money.png", 
+            "Dyson":       "dyson.png", 
+            "Сөмке":       "sumka.png",
+            "Сотуар":      "Satuar.png", 
+            "Алтын":       "golden (1).png", 
+            "Көлік":       "elantra.png", 
+            "Elantra":     "elantra.png",       // бот URL-ге "Elantra" жібереді — оны да elantra.png-ге сілтейміз
+            "Сағат":       "watch.png",         // ЖАҢА сыйлық
+            "Парфюм":      "parfum.png", 
+            "Косметика":   "cosmitic.png", 
+            "Кушон":       "cushion.png", 
+            "Косметичка":  "bag.png"
+        };
+        
+        // ═══════════════════════════════════════════════════════════════
+        // ⚠️ МАҢЫЗДЫ: БОТ vs САЙТ — АТАУ СӘЙКЕСТІГІ
+        //  
+        //  Боттың DB-сінде prize_name = "Elantra" сақталады (system name).
+        //  Бірақ карточкада клиентке "Көлік" деп көрсетіледі.
+        //  
+        //  Сондықтан модалда көрсетілетін атау түрленеді:
+        //   "Elantra" → "Көлік"
+        //  
+        //  Қалған сыйлықтардың аттары екеуінде де бірдей — өзгерту керек емес.
+        // ═══════════════════════════════════════════════════════════════
+        const PRIZE_DISPLAY_NAME = {
+            "Elantra": "Көлік"   // бот бұны жіберсе, клиентке «Көлік» деп көрсетеміз
         };
 
+        function getDisplayName(prize) {
+            return PRIZE_DISPLAY_NAME[prize] || prize;
+        }
+
         // ═══════════════════════════════════════════════════════════════
-        // 3. КӨМЕКШІ ФУНКЦИЯЛАР
+        // 4. КӨМЕКШІ ФУНКЦИЯЛАР
         // ═══════════════════════════════════════════════════════════════
 
         function createSparkles() {
@@ -304,18 +346,10 @@
             });
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // ҚОРҒАНЫС: ТЕК LOCALSTORAGE АРҚЫЛЫ ТЕКСЕРЕМІЗ
-        // 
-        // Бұл — әр attempt үшін бөлек кілт. Жаңа чек = жаңа attempt = 
-        // жаңа кілт. Сондықтан жаңа чек әрқашан ашылады.
-        // ═══════════════════════════════════════════════════════════════
-
         function isLocallyOpened() {
             try {
                 return localStorage.getItem(lockKey) === 'true';
             } catch(e) {
-                // Егер localStorage қол жетпесе (тыйым салынса), қорғанысты өткізіп жіберу
                 return false;
             }
         }
@@ -323,9 +357,7 @@
         function markLocallyOpened() {
             try {
                 localStorage.setItem(lockKey, 'true');
-            } catch(e) {
-                // Қате болса — еш проблема жоқ, бот UNIQUE-пен қорғайды
-            }
+            } catch(e) {}
         }
 
         function showError(message, sub) {
@@ -338,10 +370,9 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // 4. БАСТАУ ФУНКЦИЯСЫ
+        // 5. БАСТАУ ФУНКЦИЯСЫ
         // ═══════════════════════════════════════════════════════════════
         async function init() {
-            // Локалды тексеру: бұл нақты attempt бұрын ашылған ба?
             if (isLocallyOpened()) {
                 return showError('❌ Сіз бұл сыйлықты ашып қойғансыз!', 'Жаңа сыйлық алу үшін жаңа чек жіберіңіз');
             }
@@ -370,16 +401,7 @@
         let isOpening = false; 
 
         // ═══════════════════════════════════════════════════════════════
-        // 5. СЫЙЛЫҚТЫ АШУ
-        // 
-        // Серверге барып тексеру алынып тасталды (va-system.ru).
-        // Себептері:
-        //   1. Серверге қосымша жүктеме түсетін
-        //   2. Сервер баяуласа, клиент 5 секунд күтетін
-        //   3. Боттың UNIQUE индексі сенімді жұмыс істейді
-        // 
-        // Жаңа кодта тек локалды қорғаныс — әр attempt бір рет ашылады.
-        // Жаңа чек жіберсе → жаңа attempt → әрине ашылады.
+        // 6. СЫЙЛЫҚТЫ АШУ
         // ═══════════════════════════════════════════════════════════════
         async function revealPrize(element) {
             if (isOpening) return; 
@@ -389,22 +411,22 @@
 
             isOpening = true; 
             
-            // Барлық қобдишаларды бұғаттаймыз — біреуі ғана ашылсын
             document.querySelectorAll('.chest-card').forEach(c => {
                 c.style.pointerEvents = 'none';
             });
             
             element.classList.add('shaking'); 
 
-            // Анимация үшін аздап күту, содан соң нәтижені көрсету
             setTimeout(() => {
                 markLocallyOpened(); 
                 
+                // Сурет таңдау + клиентке көрсетілетін атау
                 const img = PRIZE_IMAGES[prizeFromBot] || "bag.png"; 
-                // FIX: XSS осалдығы escapeHTML арқылы тазартылды
+                const displayName = getDisplayName(prizeFromBot);
+                
                 document.getElementById('prizeResult').innerHTML = `
-                    <img src="${img}" class="res-img" onerror="this.src='https://placehold.co/160/000/d4af37?text=?'">
-                    <h3 style="font-size:1.4rem; margin:0; color:#fff;">${escapeHTML(prizeFromBot)}</h3>
+                    <img src="${escapeHTML(img)}" class="res-img" onerror="this.src='https://placehold.co/160/000/d4af37?text=?'">
+                    <h3 style="font-size:1.4rem; margin:0; color:#fff;">${escapeHTML(displayName)}</h3>
                 `;
                 
                 document.getElementById('winModal').style.display = 'flex';
@@ -412,11 +434,15 @@
                 setTimeout(() => {
                     document.getElementById('winModalBox').classList.add('show');
                     
-                    // FIX: Confetti функциясына try...catch қосылды, егер CDN жүктелмесе код құламауы үшін
                     try {
                         if (typeof confetti === 'function') {
                             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, zIndex: 3000, disableForReducedMotion: true });
-                            const bigPrizes = ["Көлік", "Elantra", "Бизнес тур", "Бизнес Пакет", "1 000 000 ₸", "Dyson", "Алтын"];
+                            
+                            // ЖАҢА bigPrizes тізімі:
+                            //  ❌ "Бизнес тур", "Бизнес Пакет" — алынды
+                            //  ✅ "Сағат" — қосылды
+                            const bigPrizes = ["Көлік", "Elantra", "Сағат", "1 000 000 ₸", "Dyson", "Алтын"];
+                            
                             if (bigPrizes.includes(prizeFromBot)) {
                                 setTimeout(() => { confetti({ particleCount: 200, spread: 130, origin: { y: 0.5 }, zIndex: 3000, disableForReducedMotion: true }); }, 400);
                                 setTimeout(() => {
@@ -434,20 +460,16 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // 6. ЖАБУ + БОТҚА СИГНАЛ ЖІБЕРУ
+        // 7. ЖАБУ + БОТҚА СИГНАЛ
         // 
-        // ⚠️ МАҢЫЗДЫ ӨЗГЕРІС:
-        // Бұрын: tg.sendData("update_tickets") — бот мұны ұстамайтын
-        // Жаңа: tg.sendData("gift_opened") — бот ұстайды, жеткізу 
-        // батырмасын БІРДЕН шығарады (15 секунд күтпей).
+        // tg.sendData("gift_opened") — бот мұны ұстайды, жеткізу батырмасын
+        // 10 секунд күтпей-ақ БІРДЕН шығарады.
         // ═══════════════════════════════════════════════════════════════
         function closeApp() {
             try { 
-                // FIX: tg.sendData функциясының бар-жоғы тексеріледі (error болмауы үшін)
                 if (tg && typeof tg.sendData === 'function') tg.sendData("gift_opened"); 
             } catch(e) {}
             try { 
-                // FIX: tg.close функциясының бар-жоғы тексеріледі
                 if (tg && typeof tg.close === 'function') tg.close(); 
                 else window.close();
             } catch(e) { 
@@ -455,7 +477,6 @@
             }
         }
 
-        // БАСТАУ
         init();
     </script>
 </body>
